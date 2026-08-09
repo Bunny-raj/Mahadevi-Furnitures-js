@@ -1,55 +1,84 @@
 import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import Lenis from "lenis";
+import { MessageCircle } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/context/AuthContext";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Home from "@/pages/Home";
+import Catalogue from "@/pages/Catalogue";
+import ProductDetail from "@/pages/ProductDetail";
+import AdminLogin from "@/pages/admin/AdminLogin";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const WA_LINK = "https://wa.me/919949700111?text=" +
+  encodeURIComponent("Hello MAHADEVI FURNITURES! I have a question about your furniture.");
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
+function ScrollToTop() {
+  const { pathname } = useLocation();
   useEffect(() => {
-    helloWorldApi();
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
+
+function WhatsAppFloat() {
+  return (
+    <a
+      data-testid="whatsapp-float-button"
+      href={WA_LINK}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_30px_rgba(37,211,102,0.35)] transition-transform duration-300 hover:scale-110"
+    >
+      <MessageCircle className="h-6 w-6" />
+    </a>
+  );
+}
+
+function PublicLayout({ children }) {
+  return (
+    <>
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+      <WhatsAppFloat />
+    </>
+  );
+}
+
+function App() {
+  useEffect(() => {
+    const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    let rafId;
+    const raf = (time) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
   }, []);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+          <Route path="/catalogue" element={<PublicLayout><Catalogue /></PublicLayout>} />
+          <Route path="/product/:id" element={<PublicLayout><ProductDetail /></PublicLayout>} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
-      </BrowserRouter>
-    </div>
+        <Toaster position="bottom-right" richColors />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

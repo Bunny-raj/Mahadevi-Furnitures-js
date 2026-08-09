@@ -1,88 +1,318 @@
-from fastapi import FastAPI, APIRouter
 from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv(Path(__file__).parent / '.env')
+
+import os
+import uuid
+import logging
+from datetime import datetime, timezone, timedelta
+from typing import Optional
+from urllib.parse import quote
+
+import bcrypt
+import jwt
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
-import logging
-from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
-import uuid
-from datetime import datetime, timezone
+from pydantic import BaseModel
 
-
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
-
-# MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
-app = FastAPI()
+JWT_ALGORITHM = "HS256"
+WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "919949700111")
 
-# Create a router with the /api prefix
+app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
 
-# Add your routes to the router instead of directly to app
+def verify_password(plain: str, hashed: str) -> bool:
+    return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+
+
+def create_access_token(user_id: str, email: str) -> str:
+    payload = {"sub": user_id, "email": email, "type": "access",
+               "exp": datetime.now(timezone.utc) + timedelta(minutes=60)}
+    return jwt.encode(payload, os.environ["JWT_SECRET"], algorithm=JWT_ALGORITHM)
+
+
+def create_refresh_token(user_id: str) -> str:
+    payload = {"sub": user_id, "type": "refresh",
+               "exp": datetime.now(timezone.utc) + timedelta(days=7)}
+    return jwt.encode(payload, os.environ["JWT_SECRET"], algorithm=JWT_ALGORITHM)
+
+
+def set_auth_cookies(response: Response, user_id: str, email: str):
+    response.set_cookie("access_token", create_access_token(user_id, email),
+                        httponly=True, secure=True, samesite="none", max_age=3600, path="/")
+    response.set_cookie("refresh_token", create_refresh_token(user_id),
+                        httponly=True, secure=True, samesite="none", max_age=604800, path="/")
+
+
+async def get_current_user(request: Request) -> dict:
+    token = request.cookies.get("access_token")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "access":
+            raise HTTPException(status_code=401, detail="Invalid token type")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password_hash": 0})
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
+
+
+class LoginIn(BaseModel):
+    email: str
+    password: str
+
+
+class ProductIn(BaseModel):
+    name: str
+    category: str
+    price: float
+    description: str = ""
+    image_url: str = ""
+    featured: bool = False
+
+
+class OrderIn(BaseModel):
+    product_id: str = ""
+    product_name: str
+    quantity: int = 1
+    name: str
+    phone: str
+    address: str = ""
+
+
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "MAHADEVI FURNITURES API"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
+@api_router.post("/auth/login")
+async def login(body: LoginIn, request: Request, response: Response):
+    email = body.email.lower().strip()
+    identifier = f"{request.client.host}:{email}"
+    attempts = await db.login_attempts.find_one({"identifier": identifier})
+    if attempts and attempts.get("count", 0) >= 5:
+        locked_until = attempts.get("locked_until", "")
+        if locked_until and datetime.fromisoformat(locked_until) > datetime.now(timezone.utc):
+            raise HTTPException(status_code=429, detail="Too many failed attempts. Try again in 15 minutes.")
+    user = await db.users.find_one({"email": email})
+    if not user or not verify_password(body.password, user["password_hash"]):
+        await db.login_attempts.update_one(
+            {"identifier": identifier},
+            {"$inc": {"count": 1},
+             "$set": {"locked_until": (datetime.now(timezone.utc) + timedelta(minutes=15)).isoformat()}},
+            upsert=True)
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    await db.login_attempts.delete_many({"identifier": identifier})
+    set_auth_cookies(response, user["id"], email)
+    return {"id": user["id"], "email": email, "name": user.get("name", "Admin"), "role": user.get("role", "admin")}
 
-# Include the router in the main app
+
+@api_router.post("/auth/logout")
+async def logout(response: Response):
+    response.delete_cookie("access_token", path="/")
+    response.delete_cookie("refresh_token", path="/")
+    return {"ok": True}
+
+
+@api_router.get("/auth/me")
+async def me(user: dict = Depends(get_current_user)):
+    return user
+
+
+@api_router.post("/auth/refresh")
+async def refresh(request: Request, response: Response):
+    token = request.cookies.get("refresh_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="No refresh token")
+    try:
+        payload = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "refresh":
+            raise HTTPException(status_code=401, detail="Invalid token type")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+    user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password_hash": 0})
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    response.set_cookie("access_token", create_access_token(user["id"], user["email"]),
+                        httponly=True, secure=True, samesite="none", max_age=3600, path="/")
+    return {"ok": True}
+
+
+@api_router.get("/products")
+async def list_products(category: Optional[str] = None, q: Optional[str] = None,
+                        featured: Optional[bool] = None):
+    query = {}
+    if category and category != "All":
+        query["category"] = category
+    if featured:
+        query["featured"] = True
+    if q:
+        query["name"] = {"$regex": q, "$options": "i"}
+    return await db.products.find(query, {"_id": 0}).sort("created_at", 1).to_list(500)
+
+
+@api_router.get("/products/categories")
+async def list_categories():
+    return await db.products.distinct("category")
+
+
+@api_router.get("/products/{product_id}")
+async def get_product(product_id: str):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
+
+
+@api_router.post("/products", status_code=201)
+async def create_product(body: ProductIn, user: dict = Depends(get_current_user)):
+    doc = body.model_dump()
+    doc["id"] = str(uuid.uuid4())
+    doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.products.insert_one({**doc})
+    return doc
+
+
+@api_router.put("/products/{product_id}")
+async def update_product(product_id: str, body: ProductIn, user: dict = Depends(get_current_user)):
+    result = await db.products.update_one({"id": product_id}, {"$set": body.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return await db.products.find_one({"id": product_id}, {"_id": 0})
+
+
+@api_router.delete("/products/{product_id}")
+async def delete_product(product_id: str, user: dict = Depends(get_current_user)):
+    result = await db.products.delete_one({"id": product_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"ok": True}
+
+
+@api_router.post("/orders", status_code=201)
+async def create_order(body: OrderIn):
+    doc = body.model_dump()
+    doc["id"] = str(uuid.uuid4())
+    doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    doc["status"] = "whatsapp_sent"
+    await db.orders.insert_one({**doc})
+    message = (
+        f"Hello MAHADEVI FURNITURES! I would like to place an order.\n\n"
+        f"Product: {body.product_name}\n"
+        f"Quantity: {body.quantity}\n"
+        f"Name: {body.name}\n"
+        f"Phone: {body.phone}\n"
+        f"Address: {body.address or '-'}"
+    )
+    wa_link = f"https://wa.me/{WHATSAPP_NUMBER}?text={quote(message)}"
+    return {"ok": True, "order_id": doc["id"], "wa_link": wa_link}
+
+
+@api_router.get("/orders")
+async def list_orders(user: dict = Depends(get_current_user)):
+    return await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+
+
+SEED_PRODUCTS = [
+    {"name": "Imperial Teak 3-Seater Sofa", "category": "Sofas", "price": 24999, "featured": True,
+     "description": "Solid teak frame with plush high-density cushions. A statement piece for your living room, built to last generations.",
+     "image_url": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Chesterfield 2-Seater Sofa", "category": "Sofas", "price": 19499, "featured": True,
+     "description": "Classic chesterfield silhouette in premium upholstery. Deep seating comfort with a timeless profile.",
+     "image_url": "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Cloud Comfort Recliner", "category": "Recliners", "price": 18499, "featured": True,
+     "description": "Smooth reclining mechanism with padded armrests. Your favourite corner of the house, guaranteed.",
+     "image_url": "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Royal Solid Wood King Bed", "category": "Beds", "price": 32999, "featured": True,
+     "description": "Seasoned hardwood king-size bed with a hand-finished headboard. Sleeps like royalty, priced fairly.",
+     "image_url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Urban Queen Bed with Storage", "category": "Beds", "price": 27499, "featured": False,
+     "description": "Queen-size bed with hydraulic under-bed storage. Clean lines, warm walnut finish.",
+     "image_url": "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Heritage 6-Seater Dining Set", "category": "Dining Tables", "price": 28499, "featured": True,
+     "description": "Six-seater dining set in solid wood with cushioned chairs. Where family dinners become traditions.",
+     "image_url": "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Walnut 4-Seater Dining Table", "category": "Dining Tables", "price": 16999, "featured": False,
+     "description": "Compact four-seater with a rich walnut top. Perfect for modern apartments.",
+     "image_url": "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Grand 3-Door Wardrobe", "category": "Wardrobes", "price": 21999, "featured": False,
+     "description": "Three-door wardrobe with mirror, hanging space and lockable drawer. Ample storage, elegant facade.",
+     "image_url": "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Elegance Dressing Table", "category": "Dressing Tables", "price": 9999, "featured": False,
+     "description": "Dressing table with full-length mirror and smooth-glide drawers. A quiet luxury for your bedroom.",
+     "image_url": "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Premium Plastic Chairs (Set of 4)", "category": "Chairs", "price": 1999, "featured": False,
+     "description": "Heavy-duty, weather-resistant chairs in a set of four. Light to move, strong to sit.",
+     "image_url": "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=800&q=80"},
+    {"name": "ErgoWork Office Table", "category": "Office Tables", "price": 7499, "featured": False,
+     "description": "Spacious office table with cable management and a scratch-resistant top. Built for long workdays.",
+     "image_url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80"},
+    {"name": "Compact Laptop & Computer Table", "category": "Computer Tables", "price": 2499, "featured": False,
+     "description": "Space-saving computer table with keyboard tray and shelf. Ideal for study and work-from-home setups.",
+     "image_url": "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80"},
+]
+
+
+@app.on_event("startup")
+async def startup():
+    await db.users.create_index("email", unique=True)
+    await db.login_attempts.create_index("identifier")
+    await db.products.create_index("category")
+
+    admin_email = os.environ.get("ADMIN_EMAIL")
+    admin_password = os.environ.get("ADMIN_PASSWORD")
+    existing = await db.users.find_one({"email": admin_email})
+    if not existing:
+        await db.users.insert_one({
+            "id": str(uuid.uuid4()), "email": admin_email,
+            "password_hash": hash_password(admin_password),
+            "name": "Shop Owner", "role": "admin",
+            "created_at": datetime.now(timezone.utc).isoformat()})
+        logging.getLogger(__name__).info("Admin seeded: %s", admin_email)
+    elif not verify_password(admin_password, existing["password_hash"]):
+        await db.users.update_one({"email": admin_email},
+                                  {"$set": {"password_hash": hash_password(admin_password)}})
+
+    if await db.products.count_documents({}) == 0:
+        now = datetime.now(timezone.utc).isoformat()
+        await db.products.insert_many(
+            [{**p, "id": str(uuid.uuid4()), "created_at": now} for p in SEED_PRODUCTS])
+        logging.getLogger(__name__).info("Seeded %d products", len(SEED_PRODUCTS))
+
+
 app.include_router(api_router)
 
+origins = [o for o in [os.environ.get("FRONTEND_URL"), "http://localhost:3000"] if o]
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
