@@ -1,0 +1,109 @@
+{
+  "theme": "light",
+  "typography": {
+    "headings": {
+      "family": "Playfair Display, serif",
+      "weights": ["400", "500", "700", "900"],
+      "usage": "Use tight letter spacing (tracking-tight) for large headers (text-5xl to text-7xl). Emphasize elegance, tension, and a premium warm Indian furniture aesthetic. Do not use Inter or Roboto."
+    },
+    "body": {
+      "family": "Outfit, sans-serif",
+      "weights": ["300", "400", "500"],
+      "usage": "Clean, highly readable geometric sans for contrast against the ornate serif."
+    },
+    "accents": {
+      "family": "Outfit, sans-serif",
+      "usage": "Uppercase, wide letter spacing (tracking-widest), tiny (text-xs or text-sm) for overlines, labels, and small UI details."
+    }
+  },
+  "colors": {
+    "backgrounds": {
+      "primary": "#FAF7F2",
+      "secondary": "#EAE3D6",
+      "dark_surface": "#1A1817"
+    },
+    "text": {
+      "primary": "#1A1817",
+      "secondary": "#5C564F",
+      "inverse": "#FAF7F2"
+    },
+    "brand_accent": {
+      "primary": "#8C5A35",
+      "hover": "#734A2C",
+      "subtle": "#D9C9BA"
+    },
+    "admin_dashboard": {
+      "sidebar_bg": "#1A1817",
+      "sidebar_text": "#EAE3D6",
+      "main_bg": "#F5F2EC",
+      "card_bg": "#FFFFFF",
+      "border": "#DCD6CD"
+    }
+  },
+  "visual_enhancers": {
+    "borders": "Delicate 1px borders (#DCD6CD) for structure. Avoid heavy, thick lines.",
+    "shadows": "Ambient, large diffuse shadows for product cards on hover: shadow-[0_20px_40px_rgba(26,24,23,0.06)].",
+    "corners": "Minimal rounding (rounded-none or rounded-sm) to retain an architectural, premium furniture feel.",
+    "textures": "Subtle noise overlay (opacity-20) in hero backgrounds or heavy dark sections to kill digital flatness."
+  },
+  "grids_and_layouts": {
+    "general_spacing": "Generous spacing. Use p-8, p-12, py-24. Containers must breathe, avoiding cramped elements.",
+    "hero": "Asymmetric layout or 60/40 split. Large serif typography overlapping with high-res product photography. Masked line-by-line text reveal on load.",
+    "manifesto_section": "Numbered chapters (01, 02, 03). Use massive serif numerals. Wide left margins to create editorial tension.",
+    "product_catalogue": "Grid layout: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3. Images must have consistent aspect ratio (e.g. aspect-[4/5]) with zoom on hover. Do not use standard Shadcn cards; use cardless raw images with text underneath.",
+    "product_details": "Two-column sticky layout on desktop. Left side: smooth-scroll image gallery. Right side: Sticky product info, price, and the 'Order via WhatsApp' action block.",
+    "admin_dashboard": "Sidebar layout (w-64) on desktop. High density, technical look. Table views for inventory with clear status badges."
+  },
+  "motion": {
+    "scrolling": "MANDATORY: Lenis smooth scrolling for premium browser feel.",
+    "reveals": "Framer Motion. Elements slide up slightly (y: 30, opacity: 0 to 1) with custom easing [0.22, 1, 0.36, 1].",
+    "hero_load": "Kinetic text reveal. Masked line-by-line using overflow-hidden and y-axis translation.",
+    "hover_states": "Images scale up slightly (scale-105) inside overflow-hidden wrappers. Button backgrounds slide or fade smoothly.",
+    "marquee": "One very slow editorial marquee (e.g., 'CRAFTED FOR HOME — PREMIUM MATERIALS — MAHADEVI FURNITURES'). Font-serif, large outline text."
+  },
+  "components": {
+    "buttons": "Flat, sharp corners (rounded-none). Primary CTA is solid Accent (#8C5A35). WhatsApp button should use WhatsApp Green (#25D366) only on the PDP action context.",
+    "navigation": "Glassmorphism header (backdrop-blur-xl bg-[#FAF7F2]/80). Must NOT be fully transparent. Border bottom 1px.",
+    "product_card": "Cardless design. Raw image with text underneath. Left-aligned title, serif price.",
+    "admin_tables": "Shadcn UI tables. Minimalist, dense. Actions via dropdown menus.",
+    "toast": "Use Sonner for notifications (e.g., 'Product updated successfully'). Position bottom-right."
+  },
+  "whatsapp_integration": {
+    "phone_number": "+919949700111",
+    "link_format": "https://wa.me/919949700111?text=",
+    "flow": "User clicks 'Order Now'. A Shadcn Dialog opens prompting for Name, Address, and Quantity. On submit, constructs URL: 'Hello, I want to order [Quantity]x [Product Name]. My name is [Name], Address: [Address].' and redirects to wa.me."
+  },
+  "image_urls": {
+    "hero_sofa": "https://images.pexels.com/photos/27638192/pexels-photo-27638192.jpeg",
+    "catalogue_sofa_1": "https://images.unsplash.com/photo-1512212621149-107ffe572d2f",
+    "catalogue_sofa_2": "https://images.pexels.com/photos/7018400/pexels-photo-7018400.jpeg",
+    "catalogue_bed": "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2",
+    "catalogue_dining": "https://images.unsplash.com/photo-1758977404039-6e834be8eca8",
+    "catalogue_wardrobe": "https://images.pexels.com/photos/32331030/pexels-photo-32331030.png"
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the color palette. No purple, no standard generic tailwind gradients.",
+    "Use standard React .jsx or .js files as this project does not use .tsx (TypeScript). Adjust imports and syntax accordingly.",
+    "Use Playfair Display for headings and Outfit for body. Ensure they are loaded via Google Fonts in index.html or global CSS.",
+    "Use Framer Motion for line-by-line hero text reveals and scrolling animations.",
+    "Implement Lenis for smooth scrolling.",
+    "Implement the 'Order via WhatsApp' flow using a customized Shadcn Dialog to capture user details before generating the wa.me link.",
+    "Admin Dashboard must be protected by simple JWT Auth. Admin UI should be practical, using Shadcn tables and forms.",
+    "Product images must maintain a strict aspect ratio in grids (e.g., aspect-[4/5]) to avoid broken layouts.",
+    "Ensure the Header has a backdrop-blur background, NEVER fully transparent if content scrolls beneath it.",
+    "All interactive elements MUST have data-testid attributes (e.g., data-testid='whatsapp-order-btn')."
+  ],
+  "accessibility": {
+    "contrast": "Ensure text colors meet APCA/WCAG standards on their backgrounds.",
+    "focus": "Focus states must be visible. Use focus:ring-2 focus:ring-brand_accent/50.",
+    "aria": "Include aria-labels for icon-only buttons (like admin table actions)."
+  },
+  "universal_guidelines_for_main_agent": [
+    "Do not converge toward generic 'AI slop' aesthetics. Use large typography, stark contrasts, and asymmetric grids where appropriate.",
+    "Create depth through layered design elements with precise z-index management.",
+    "You MUST NOT apply universal transitions (e.g. `transition: all`). Target specific properties like `transition-colors` or `transition-transform`.",
+    "Do not center-align paragraphs; left-align dense content.",
+    "Never use placeholder image services like via.placeholder.com. Use the provided image_urls.",
+    "Every interaction needs micro-animations (hover states, press states)."
+  ]
+}
