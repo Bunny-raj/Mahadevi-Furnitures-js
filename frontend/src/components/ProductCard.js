@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-import { inr } from "@/lib/format";
+import { inr, discountPct } from "@/lib/format";
+import { imgUrl } from "@/lib/api";
 
 export default function ProductCard({ product }) {
   return (
@@ -10,8 +11,16 @@ export default function ProductCard({ product }) {
       className="group block"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-[#EAE3D6]">
+        {discountPct(product) > 0 && (
+          <span
+            data-testid={`discount-badge-${product.id}`}
+            className="absolute left-4 top-4 z-10 bg-[#8C5A35] px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-[#FAF7F2]"
+          >
+            {discountPct(product)}% Off
+          </span>
+        )}
         <img
-          src={product.image_url}
+          src={imgUrl(product.image_url)}
           alt={product.name}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
@@ -27,9 +36,14 @@ export default function ProductCard({ product }) {
             {product.name}
           </h3>
         </div>
-        <p className="font-display whitespace-nowrap text-lg font-bold text-[#1A1817]">
-          {inr(product.price)}
-        </p>
+        <div className="text-right">
+          <p className="font-display whitespace-nowrap text-lg font-bold text-[#1A1817]">
+            {inr(product.price)}
+          </p>
+          {Number(product.mrp) > Number(product.price) && (
+            <p className="text-xs font-light text-[#5C564F] line-through">{inr(product.mrp)}</p>
+          )}
+        </div>
       </div>
     </Link>
   );

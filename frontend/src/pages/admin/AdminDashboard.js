@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Package, ShoppingBag, LogOut, Plus, Pencil, Trash2 } from "lucide-react";
+import { Package, ShoppingBag, LogOut, Plus, Pencil, Trash2, Store, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { api, formatApiError } from "@/lib/api";
+import { api, formatApiError, imgUrl } from "@/lib/api";
 import { inr } from "@/lib/format";
 import { useAuth } from "@/context/AuthContext";
 import { CATEGORIES } from "@/constants/categories";
@@ -33,6 +33,9 @@ export default function AdminDashboard() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [settingsForm, setSettingsForm] = useState({ address: "", hours: "", map_embed_url: "", logo_url: "" });
+  const [settingsSaving, setSettingsSaving] = useState(false);
 
   const fetchProducts = useCallback(() => {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
@@ -62,14 +65,14 @@ export default function AdminDashboard() {
 
   const openEdit = (p) => {
     setEditing(p);
-    setForm({ name: p.name, category: p.category, price: String(p.price), image_url: p.image_url, description: p.description, featured: p.featured });
+    setForm({ name: p.name, category: p.category, price: String(p.price), mrp: p.mrp ? String(p.mrp) : "", image_url: p.image_url, description: p.description, featured: p.featured });
     setDialogOpen(true);
   };
 
   const save = async (e) => {
     e.preventDefault();
     setSaving(true);
-    const payload = { ...form, price: Number(form.price) || 0 };
+    const payload = { ...form, price: Number(form.price) || 0, mrp: Number(form.mrp) || 0 };
     try {
       if (editing) {
         await api.put(`/products/${editing.id}`, payload);
@@ -103,6 +106,56 @@ export default function AdminDashboard() {
     navigate("/admin/login");
   };
 
+  const uploadImage = async (file, onDone) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    const { data } = await api.post("/upload", fd, { headers: { "Content-Type": "multipart/form-data" } });
+    onDone(data.url);
+  };
+
+  const onPickImage = async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setUploading(true);
+    try {
+      await uploadImage(f, (url) => setForm((prev) => ({ ...prev, image_url: url })));
+      toast.success("Photo uploaded.");
+    } catch (err) {
+      toast.error(formatApiError(err));
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const onPickLogo = async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setUploading(true);
+    try {
+      await uploadImage(f, (url) => setSettingsForm((prev) => ({ ...prev, logo_url: url })));
+      toast.success("Logo uploaded.");
+    } catch (err) {
+      toast.error(formatApiError(err));
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const saveSettings = async (e) => {
+    e.preventDefault();
+    setSettingsSaving(true);
+    try {
+      await api.put("/settings", settingsForm);
+      toast.success("Shop details saved — live on the website now.");
+    } catch (err) {
+      toast.error(formatApiError(err));
+    } finally {
+      setSettingsSaving(false);
+    }
+  };
+
   const tabBtn = (key, label, Icon, suffix = "") => (
     <button
       key={key}
@@ -126,6 +179,7 @@ export default function AdminDashboard() {
         <nav className="mt-4 flex flex-col">
           {tabBtn("products", "Products", Package)}
           {tabBtn("orders", "Orders", ShoppingBag)}
+          {tabBtn("settings", "Shop Settings", Store)}
         </nav>
         <button
           data-testid="admin-logout-button"
@@ -140,12 +194,14 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between border-b border-[#DCD6CD] bg-white px-6 py-5 md:px-10">
           <div>
             <h1 className="font-display text-2xl font-medium tracking-tight text-[#1A1817]">
-              {tab === "products" ? "Products & Prices" : "Customer Orders"}
+              {tab === "products" ? "Products & Prices" : tab === "orders" ? "Customer Orders" : "Shop Settings"}
             </h1>
             <p className="mt-1 text-xs font-light text-[#5C564F]">
               {tab === "products"
-                ? "Edit a price or product here — it updates on the website instantly."
-                : "Orders customers sent to your WhatsApp."}
+                ? "Edit a price, MRP or product here — it updates on the website instantly."
+                : tab === "orders"
+                ? "Orders customers sent to your WhatsApp."
+                : "Your logo, showroom address, hours and map — shown across the website."}
             </p>
           </div>
           {tab === "products" && (
@@ -162,6 +218,7 @@ export default function AdminDashboard() {
         <div className="flex gap-2 border-b border-[#DCD6CD] bg-[#1A1817] px-2 py-2 md:hidden">
           {tabBtn("products", "Products", Package, "-mobile")}
           {tabBtn("orders", "Orders", ShoppingBag, "-mobile")}
+          {tabBtn("settings", "Settings", Store, "-mobile")}
           <button data-testid="admin-logout-button-mobile" onClick={doLogout} className="flex items-center gap-2 px-4 text-xs uppercase tracking-[0.2em] text-[#EAE3D6]/60">
             <LogOut className="h-4 w-4" />
           </button>
@@ -261,6 +318,80 @@ export default function AdminDashboard() {
               )}
             </div>
           )}
+
+          {tab === "settings" && (
+            <form
+              onSubmit={saveSettings}
+              data-testid="settings-form"
+              className="max-w-xl border border-[#DCD6CD] bg-white p-6 md:p-8"
+            >
+              <div className="flex flex-col gap-6">
+                <div>
+                  <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Shop Logo</Label>
+                  <div className="mt-3 flex items-center gap-4">
+                    {settingsForm.logo_url ? (
+                      <img
+                        src={imgUrl(settingsForm.logo_url)}
+                        alt="Shop logo"
+                        data-testid="settings-logo-preview"
+                        className="h-14 w-auto border border-[#DCD6CD] bg-[#FAF7F2] object-contain p-1"
+                      />
+                    ) : (
+                      <span className="text-xs font-light text-[#5C564F]">
+                        No logo yet — the text name shows on the website
+                      </span>
+                    )}
+                    <input id="logo-file" data-testid="settings-logo-file" type="file" accept="image/*" onChange={onPickLogo} className="hidden" />
+                    <label
+                      htmlFor="logo-file"
+                      data-testid="settings-logo-upload-button"
+                      className="flex w-fit cursor-pointer items-center gap-2 border border-[#1A1817] px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] text-[#1A1817] transition-colors duration-300 hover:bg-[#1A1817] hover:text-[#FAF7F2]"
+                    >
+                      <Upload className="h-3.5 w-3.5" /> {uploading ? "Uploading…" : "Upload Logo"}
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Showroom Address</Label>
+                  <Textarea
+                    data-testid="settings-address-input"
+                    value={settingsForm.address}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, address: e.target.value })}
+                    placeholder="Shop no, street, area, city, PIN"
+                    className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Business Hours</Label>
+                  <Input
+                    data-testid="settings-hours-input"
+                    value={settingsForm.hours}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, hours: e.target.value })}
+                    placeholder="e.g. Mon–Sun, 10 AM – 9 PM"
+                    className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Google Maps Embed URL (optional)</Label>
+                  <Input
+                    data-testid="settings-map-input"
+                    value={settingsForm.map_embed_url}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, map_embed_url: e.target.value })}
+                    placeholder="Google Maps → Share → Embed a map → copy the src link"
+                    className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
+                  />
+                </div>
+                <Button
+                  data-testid="settings-save-button"
+                  type="submit"
+                  disabled={settingsSaving}
+                  className="rounded-none bg-[#8C5A35] py-6 text-xs uppercase tracking-[0.25em] text-[#FAF7F2] hover:bg-[#734A2C]"
+                >
+                  {settingsSaving ? "Saving…" : "Save Shop Details"}
+                </Button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
 
@@ -282,7 +413,7 @@ export default function AdminDashboard() {
                 className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <div>
                 <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Category</Label>
                 <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
@@ -308,18 +439,40 @@ export default function AdminDashboard() {
                   className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
                 />
               </div>
+              <div>
+                <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">MRP ₹ (Before Discount)</Label>
+                <Input
+                  data-testid="product-form-mrp"
+                  type="number"
+                  min="0"
+                  value={form.mrp}
+                  onChange={(e) => setForm({ ...form, mrp: e.target.value })}
+                  placeholder="Optional"
+                  className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
+                />
+              </div>
             </div>
             <div>
               <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Image URL</Label>
-              <Input
-                data-testid="product-form-image"
-                value={form.image_url}
-                onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-                placeholder="https://…"
-                className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
-              />
+              <div className="mt-2 flex gap-2">
+                <Input
+                  data-testid="product-form-image"
+                  value={form.image_url}
+                  onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                  placeholder="Paste image URL, or upload →"
+                  className="rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
+                />
+                <input id="product-photo-file" data-testid="product-form-file" type="file" accept="image/*" onChange={onPickImage} className="hidden" />
+                <label
+                  htmlFor="product-photo-file"
+                  data-testid="product-form-upload-button"
+                  className="flex cursor-pointer items-center gap-2 whitespace-nowrap border border-[#1A1817] px-4 text-[10px] uppercase tracking-[0.2em] text-[#1A1817] transition-colors duration-300 hover:bg-[#1A1817] hover:text-[#FAF7F2]"
+                >
+                  <Upload className="h-3.5 w-3.5" /> {uploading ? "Uploading…" : "Upload"}
+                </label>
+              </div>
               {form.image_url && (
-                <img src={form.image_url} alt="Preview" className="mt-3 h-28 w-28 border border-[#DCD6CD] object-cover" data-testid="product-form-image-preview" />
+                <img src={imgUrl(form.image_url)} alt="Preview" className="mt-3 h-28 w-28 border border-[#DCD6CD] object-cover" data-testid="product-form-image-preview" />
               )}
             </div>
             <div>

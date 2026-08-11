@@ -1,5 +1,5 @@
 export default function Marquee() {
-  const items = ["CRAFTED FOR HOME", "PREMIUM MATERIALS", "MAHADEVI FURNITURES", "FAIR PRICES, DIRECT"];
+  const items = ["CRAFTED FOR HOME", "UP TO 60% OFF", "PREMIUM MATERIALS", "MAHADEVI FURNITURES", "FAIR PRICES, DIRECT"];
   const row = [...items, ...items, ...items];
   return (
     <div data-testid="editorial-marquee" className="overflow-hidden border-y border-[#DCD6CD] bg-[#EAE3D6] py-6">

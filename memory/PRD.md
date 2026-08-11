@@ -27,10 +27,15 @@
 - Admin: JWT login, product add/edit/delete (price rename live instantly), featured toggle, orders list, logout
 - Floating WhatsApp button, glass navbar, dark footer with phone/WhatsApp links
 
+## Implemented (2026-08-11)
+- Discounts up to 60%: per-product MRP field in admin; storefront shows "% Off" badges, strikethrough MRP and "You save ₹X"; marquee includes UP TO 60% OFF; existing products migrated with MRPs (20–60% off)
+- Photo uploads from phone/desktop: admin product form has Upload button (Emergent object storage via /api/upload, served at /api/files/*); admin-only, 8MB image limit
+- Logo upload: admin Shop Settings tab → logo shows in navbar + footer (text wordmark fallback)
+- Showroom section on home page: address, business hours, Google Maps embed — all editable in admin Shop Settings; address/hours also appear in footer
+
 ## Backlog
 - P0: none
-- P1: Upload product images from phone/computer (object storage) instead of pasting URLs
-- P1: Owner logo image upload for navbar/footer
+- P1: Owner fills real showroom address, hours, map link and uploads real logo in Shop Settings
 - P2: Mark orders as done/pending in admin
-- P2: Showroom address + Google Maps embed, business hours
 - P2: Product stock status (available/sold out)
+- P2: Delete uploaded files (soft-delete exists in DB)

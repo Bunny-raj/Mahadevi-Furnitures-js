@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X, MessageCircle } from "lucide-react";
+import useSettings from "@/hooks/useSettings";
+import { imgUrl } from "@/lib/api";
 
 const WA_LINK = "https://wa.me/919949700111?text=" +
   encodeURIComponent("Hello MAHADEVI FURNITURES! I have a question about your furniture.");
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const settings = useSettings();
 
   const linkCls = ({ isActive }) =>
     `text-xs uppercase tracking-[0.22em] transition-colors duration-300 ${
@@ -20,12 +23,23 @@ export default function Navbar() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:h-20 md:px-10">
         <Link to="/" data-testid="navbar-logo" className="leading-none">
-          <span className="font-display block text-lg font-bold tracking-tight text-[#1A1817] md:text-xl">
-            MAHADEVI
-          </span>
-          <span className="block text-[10px] uppercase tracking-[0.45em] text-[#8C5A35]">
-            Furnitures
-          </span>
+          {settings?.logo_url ? (
+            <img
+              src={imgUrl(settings.logo_url)}
+              alt="Mahadevi Furnitures"
+              data-testid="navbar-logo-image"
+              className="h-10 w-auto object-contain md:h-12"
+            />
+          ) : (
+            <>
+              <span className="font-display block text-lg font-bold tracking-tight text-[#1A1817] md:text-xl">
+                MAHADEVI
+              </span>
+              <span className="block text-[10px] uppercase tracking-[0.45em] text-[#8C5A35]">
+                Furnitures
+              </span>
+            </>
+          )}
         </Link>
 
         <nav className="hidden items-center gap-10 md:flex">

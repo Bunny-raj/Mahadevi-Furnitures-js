@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, MessageCircle, ShieldCheck, Truck, BadgeIndianRupee } from "lucide-react";
-import { api } from "@/lib/api";
-import { inr } from "@/lib/format";
+import { api, imgUrl } from "@/lib/api";
+import { inr, discountPct } from "@/lib/format";
 import Reveal from "@/components/Reveal";
 import ProductCard from "@/components/ProductCard";
 import OrderDialog from "@/components/OrderDialog";
@@ -64,11 +64,19 @@ export default function ProductDetail() {
         <Reveal>
           <div className="sticky top-28 aspect-[4/5] overflow-hidden bg-[#EAE3D6]">
             <img
-              src={product.image_url}
+              src={imgUrl(product.image_url)}
               alt={product.name}
               data-testid="product-detail-image"
               className="h-full w-full object-cover"
             />
+            {discountPct(product) > 0 && (
+              <span
+                data-testid="product-discount-badge"
+                className="absolute left-5 top-5 bg-[#8C5A35] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[#FAF7F2]"
+              >
+                {discountPct(product)}% Off
+              </span>
+            )}
           </div>
         </Reveal>
 
@@ -79,9 +87,21 @@ export default function ProductDetail() {
           <h1 className="font-display mt-4 text-4xl font-medium leading-tight tracking-tight text-[#1A1817] md:text-5xl" data-testid="product-name">
             {product.name}
           </h1>
-          <p className="font-display mt-6 text-3xl font-bold text-[#8C5A35]" data-testid="product-price">
-            {inr(product.price)}
-          </p>
+          <div className="mt-6 flex flex-wrap items-baseline gap-4">
+            <p className="font-display text-3xl font-bold text-[#8C5A35]" data-testid="product-price">
+              {inr(product.price)}
+            </p>
+            {Number(product.mrp) > Number(product.price) && (
+              <>
+                <p className="text-lg font-light text-[#5C564F] line-through" data-testid="product-mrp">
+                  {inr(product.mrp)}
+                </p>
+                <p className="text-xs uppercase tracking-[0.2em] text-[#8C5A35]" data-testid="product-savings">
+                  You save {inr(product.mrp - product.price)}
+                </p>
+              </>
+            )}
+          </div>
           <p className="mt-8 max-w-md text-base font-light leading-relaxed text-[#5C564F]" data-testid="product-description">
             {product.description}
           </p>

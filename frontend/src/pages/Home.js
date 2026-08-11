@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, MapPin, Clock } from "lucide-react";
 import { api } from "@/lib/api";
 import Reveal from "@/components/Reveal";
 import Marquee from "@/components/Marquee";
 import ProductCard from "@/components/ProductCard";
+import useSettings from "@/hooks/useSettings";
 
 const HERO_IMAGE = "https://images.pexels.com/photos/27638192/pexels-photo-27638192.jpeg?auto=compress&cs=tinysrgb&w=1600";
 const SPOTLIGHT_IMAGE = "https://images.pexels.com/photos/7018400/pexels-photo-7018400.jpeg?auto=compress&cs=tinysrgb&w=1200";
@@ -55,6 +56,7 @@ const CHAPTERS = [
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
+  const settings = useSettings();
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const imageY = useTransform(scrollYProgress, [0, 1], [0, 110]);
@@ -245,6 +247,60 @@ export default function Home() {
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </Reveal>
+      </section>
+
+      <section data-testid="showroom-section" className="noise-overlay bg-[#EAE3D6] py-20 md:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-2 md:px-10">
+          <Reveal>
+            <p className="text-xs uppercase tracking-[0.4em] text-[#8C5A35]">Visit The Showroom</p>
+            <h2 className="font-display mt-4 text-4xl font-medium leading-tight tracking-tight text-[#1A1817] md:text-5xl">
+              Come, sit on it<br />before you buy it.
+            </h2>
+            <div className="mt-8 flex max-w-md flex-col gap-5">
+              <div className="flex items-start gap-4">
+                <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#8C5A35]" />
+                <p className="text-sm font-light leading-relaxed text-[#5C564F]" data-testid="showroom-address">
+                  {settings?.address || "Message us on WhatsApp and we'll share the showroom location and directions."}
+                </p>
+              </div>
+              <div className="flex items-start gap-4">
+                <Clock className="mt-0.5 h-5 w-5 shrink-0 text-[#8C5A35]" />
+                <p className="text-sm font-light leading-relaxed text-[#5C564F]" data-testid="showroom-hours">
+                  {settings?.hours || "Open all days — call +91 99497 00111 before you drop by."}
+                </p>
+              </div>
+            </div>
+            <a
+              href="https://wa.me/919949700111?text=Hello%20MAHADEVI%20FURNITURES!%20Please%20share%20your%20showroom%20location."
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="showroom-whatsapp-button"
+              className="mt-10 inline-flex items-center gap-3 border border-[#1A1817] px-8 py-4 text-xs uppercase tracking-[0.25em] text-[#1A1817] transition-colors duration-300 hover:bg-[#1A1817] hover:text-[#FAF7F2]"
+            >
+              Get Directions on WhatsApp
+            </a>
+          </Reveal>
+          <Reveal delay={0.15}>
+            {settings?.map_embed_url ? (
+              <iframe
+                src={settings.map_embed_url}
+                title="Mahadevi Furnitures showroom map"
+                data-testid="showroom-map"
+                loading="lazy"
+                className="h-full min-h-[340px] w-full border-0"
+              />
+            ) : (
+              <div className="aspect-[4/3] overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1758977404039-6e834be8eca8?auto=format&fit=crop&w=1200&q=80"
+                  alt="Mahadevi Furnitures showroom"
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+              </div>
+            )}
+          </Reveal>
+        </div>
       </section>
     </div>
   );

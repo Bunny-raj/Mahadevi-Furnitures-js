@@ -12,7 +12,8 @@ from urllib.parse import quote
 
 import bcrypt
 import jwt
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends
+import requests
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, Depends, UploadFile, File
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
@@ -23,6 +24,39 @@ db = client[os.environ['DB_NAME']]
 
 JWT_ALGORITHM = "HS256"
 WHATSAPP_NUMBER = os.environ.get("WHATSAPP_NUMBER", "919949700111")
+
+STORAGE_BASE = (os.environ.get("INTEGRATION_PROXY_URL") or "").strip() or "https://integrations.emergentagent.com"
+STORAGE_URL = STORAGE_BASE.rstrip("/") + "/objstore/api/v1/storage"
+EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY")
+APP_NAME = "mahadevi-furnitures"
+storage_key = None
+
+
+def init_storage(force: bool = False):
+    global storage_key
+    if storage_key and not force:
+        return storage_key
+    resp = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_KEY}, timeout=30)
+    resp.raise_for_status()
+    storage_key = resp.json()["storage_key"]
+    return storage_key
+
+
+def put_object(path: str, data: bytes, content_type: str) -> dict:
+    resp = requests.put(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": init_storage(), "Content-Type": content_type},
+        data=data, timeout=120)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_object(path: str):
+    resp = requests.get(
+        f"{STORAGE_URL}/objects/{path}",
+        headers={"X-Storage-Key": init_storage()}, timeout=60)
+    resp.raise_for_status()
+    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
@@ -86,6 +120,7 @@ class ProductIn(BaseModel):
     name: str
     category: str
     price: float
+    mrp: float = 0
     description: str = ""
     image_url: str = ""
     featured: bool = False
@@ -233,6 +268,56 @@ async def list_orders(user: dict = Depends(get_current_user)):
     return await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
 
 
+class SettingsIn(BaseModel):
+    address: str = ""
+    hours: str = ""
+    map_embed_url: str = ""
+    logo_url: str = ""
+
+
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+
+
+@api_router.post("/upload", status_code=201)
+async def upload_image(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="Only image files (jpg, png, webp, gif) are allowed")
+    data = await file.read()
+    if len(data) > 8 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large (max 8 MB)")
+    ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "jpg"
+    path = f"{APP_NAME}/uploads/{user['id']}/{uuid.uuid4()}.{ext}"
+    result = put_object(path, data, file.content_type)
+    await db.files.insert_one({
+        "id": str(uuid.uuid4()), "storage_path": result["path"],
+        "original_filename": file.filename, "content_type": file.content_type,
+        "size": result["size"], "is_deleted": False,
+        "created_at": datetime.now(timezone.utc).isoformat()})
+    return {"path": result["path"], "url": f"/api/files/{result['path']}"}
+
+
+@api_router.get("/files/{path:path}")
+async def serve_file(path: str):
+    record = await db.files.find_one({"storage_path": path, "is_deleted": False})
+    if not record:
+        raise HTTPException(status_code=404, detail="File not found")
+    data, content_type = get_object(path)
+    return Response(content=data, media_type=record.get("content_type") or content_type)
+
+
+@api_router.get("/settings")
+async def get_settings():
+    doc = await db.settings.find_one({"key": "shop"}, {"_id": 0})
+    return doc or {"key": "shop", "address": "", "hours": "", "map_embed_url": "", "logo_url": ""}
+
+
+@api_router.put("/settings")
+async def update_settings(body: SettingsIn, user: dict = Depends(get_current_user)):
+    doc = {"key": "shop", **body.model_dump()}
+    await db.settings.update_one({"key": "shop"}, {"$set": doc}, upsert=True)
+    return doc
+
+
 SEED_PRODUCTS = [
     {"name": "Imperial Teak 3-Seater Sofa", "category": "Sofas", "price": 24999, "featured": True,
      "description": "Solid teak frame with plush high-density cushions. A statement piece for your living room, built to last generations.",
@@ -275,6 +360,11 @@ SEED_PRODUCTS = [
 
 @app.on_event("startup")
 async def startup():
+    try:
+        init_storage()
+        logging.getLogger(__name__).info("Object storage initialized")
+    except Exception as e:
+        logging.getLogger(__name__).error("Storage init failed: %s", e)
     await db.users.create_index("email", unique=True)
     await db.login_attempts.create_index("identifier")
     await db.products.create_index("category")
@@ -295,8 +385,10 @@ async def startup():
 
     if await db.products.count_documents({}) == 0:
         now = datetime.now(timezone.utc).isoformat()
+        mrp_factors = [2.5, 1.67, 1.67, 2.5, 1.56, 1.67, 1.25, 1.43, 1.67, 2.0, 1.67, 2.0]
         await db.products.insert_many(
-            [{**p, "id": str(uuid.uuid4()), "created_at": now} for p in SEED_PRODUCTS])
+            [{**p, "mrp": int(round(p["price"] * mrp_factors[i % len(mrp_factors)] / 100) * 100 - 1),
+              "id": str(uuid.uuid4()), "created_at": now} for i, p in enumerate(SEED_PRODUCTS)])
         logging.getLogger(__name__).info("Seeded %d products", len(SEED_PRODUCTS))
 
 
