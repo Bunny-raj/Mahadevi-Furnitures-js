@@ -48,6 +48,9 @@
 - Mattress ordering options (per attached Relaxwell chart): Collection (Natural Elements/Elevate/Iconic/Dynamic/Orthopedic), Material (Coir/Spring/Foam/Natural Latex/Memory Foam), Firmness (Extra Firm/Medium Firm/Soft), Size (Single/Double/Queen/King) — required pill selectors in order dialog for category "Mattresses"; all selections stored on order + included in WhatsApp message; admin Orders tab shows them under product name
 - OrderIn.options dict field; constants in /app/frontend/src/constants/mattressOptions.js
 
+## Implemented (2026-08-11 f)
+- Full Relaxwell range: one mattress per collection with real model names/prices from Relaxwell site — OrthoFit (Orthopedic, ₹13,589), Nature Therapy (Natural Elements, ₹26,305), ActivMatt (Elevate, ₹12,439), Royale (Iconic, ₹12,825), Prism (Dynamic, ₹10,422); AI-generated distinct product images; seeds updated
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)
