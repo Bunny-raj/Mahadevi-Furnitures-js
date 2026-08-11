@@ -63,6 +63,13 @@ export default function Footer() {
               <Phone className="h-4 w-4 text-[#8C5A35]" /> +91 99497 00111
             </a>
             <a
+              data-testid="footer-phone-link-2"
+              href="tel:+919393300111"
+              className="flex w-fit items-center gap-3 transition-colors duration-300 hover:text-[#FAF7F2]"
+            >
+              <Phone className="h-4 w-4 text-[#8C5A35]" /> +91 93933 00111
+            </a>
+            <a
               data-testid="footer-whatsapp-link"
               href="https://wa.me/919949700111"
               target="_blank"

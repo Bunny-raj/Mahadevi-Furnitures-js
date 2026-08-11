@@ -37,6 +37,7 @@
 - Review Reply: PUT /api/reviews/{id}/reply (admin), reply button + dialog in admin Reviews tab, "Reply from Mahadevi Furnitures" block shown under review on home page; empty reply removes it
 - Real shop details set live: address (Shop No. 22-96, Beside Bajaj Electronics, BHEL X Road, Kanukunta, Lingampally, Hyderabad 502032), hours (Open all days: 10 AM – 9:30 PM), Google Maps embed (resolved from owner's share link, pin at MAHADEVI FURNITURES), real logo uploaded (square-cropped emblem)
 - Navbar + footer show circular logo emblem beside the MAHADEVI wordmark
+- Second contact number +91 93933 00111 added to footer "Talk To Us" (2026-08-11); WhatsApp orders still go to +91 99497 00111
 
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
