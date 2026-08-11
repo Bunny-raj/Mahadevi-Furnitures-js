@@ -67,6 +67,9 @@
 - Real per-colour photos set: Novella 08 (Biscuit main + Red/Milky White/Orange), Novella 09 (Biscuit/Red), CHR2061 (Pear Wood), Luxe (Bright Red & Black), Aura (Pearl White), Grace (Gold)
 - FIXED image misassignment from batch-2 chairs (crop row mapping was shifted): corrected main images for CHR4025, CHR2061, CHR4002, CHR2005, CHR2231, CHR2101, Enamora, Novella 08, Captain Arm, Captain Metallic
 
+## Implemented (2026-08-11 k)
+- Product detail image now object-contain (full chair visible, nothing cropped); "3-Year Warranty" badge chip shown on Plastic Chairs and any product whose description mentions warranty
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)

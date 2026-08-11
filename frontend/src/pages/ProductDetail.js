@@ -88,7 +88,7 @@ export default function ProductDetail() {
               src={imgUrl((selectedColor && product.color_images?.[selectedColor]) || product.image_url)}
               alt={selectedColor ? `${product.name} — ${selectedColor}` : product.name}
               data-testid="product-detail-image"
-              className="h-full w-full object-cover transition-transform duration-200 ease-out"
+              className="h-full w-full object-contain transition-transform duration-200 ease-out"
               style={{
                 transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
                 transform: zoom ? "scale(2.2)" : "scale(1)",
@@ -144,6 +144,16 @@ export default function ProductDetail() {
           <p className="mt-8 max-w-md text-base font-light leading-relaxed text-[#5C564F]" data-testid="product-description">
             {product.description}
           </p>
+
+          {(product.category === "Plastic Chairs" || /warranty/i.test(product.description || "")) && (
+            <div
+              data-testid="product-warranty-badge"
+              className="mt-6 inline-flex w-fit items-center gap-2.5 border border-[#8C5A35]/40 bg-[#8C5A35]/5 px-4 py-2.5"
+            >
+              <ShieldCheck className="h-5 w-5 text-[#8C5A35]" />
+              <span className="text-xs font-medium uppercase tracking-[0.2em] text-[#8C5A35]">3-Year Warranty</span>
+            </div>
+          )}
 
           {product.colors?.length > 0 && (
             <div className="mt-8" data-testid="product-color-picker">
