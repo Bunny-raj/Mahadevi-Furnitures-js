@@ -51,6 +51,9 @@
 ## Implemented (2026-08-11 f)
 - Full Relaxwell range: one mattress per collection with real model names/prices from Relaxwell site — OrthoFit (Orthopedic, ₹13,589), Nature Therapy (Natural Elements, ₹26,305), ActivMatt (Elevate, ₹12,439), Royale (Iconic, ₹12,825), Prism (Dynamic, ₹10,422); AI-generated distinct product images; seeds updated
 
+## Implemented (2026-08-11 g)
+- All 17 Relaxwell mattress models added with REAL images cropped from owner's screenshots (uploaded to object storage) in the exact row order shown: ActivMatt, Maxima, Infinia, Nature Therapy, Royale, Majestic ET, Aristo, Aristo PT, VitaSleep, Cosmos, Exotica Dlx ET, Luxurio, Luxurio ET, OrthoFit, Regal, TechnoSoft, Prism — with real prices/MRPs; original "SAVE ₹" badges trimmed from images; ordering via created_at sequence
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)
