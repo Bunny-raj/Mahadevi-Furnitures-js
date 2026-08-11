@@ -33,6 +33,11 @@
 - Colour Palette: admin "Available Colours" comma-separated input; swatch pills on product detail + order dialog (required when product has colours); colour included in saved order + WhatsApp message; all 12 products seeded with category colours
 - Fixes from testing: settings form now hydrates from GET /api/settings (data-loss bug), lockout keyed on email (proxy IP unreliable), review approve uses Pydantic bool, image uploads validate magic bytes, product form dialog a11y
 
+## Implemented (2026-08-11 c)
+- Review Reply: PUT /api/reviews/{id}/reply (admin), reply button + dialog in admin Reviews tab, "Reply from Mahadevi Furnitures" block shown under review on home page; empty reply removes it
+- Real shop details set live: address (Shop No. 22-96, Beside Bajaj Electronics, BHEL X Road, Kanukunta, Lingampally, Hyderabad 502032), hours (Open all days: 10 AM – 9:30 PM), Google Maps embed (resolved from owner's share link, pin at MAHADEVI FURNITURES), real logo uploaded (square-cropped emblem)
+- Navbar + footer show circular logo emblem beside the MAHADEVI wordmark
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)
@@ -42,8 +47,7 @@
 - Test suite: /app/backend/tests/backend_test.py
 
 ## Backlog
-- P1: Owner fills real showroom address, hours, map link and uploads real logo in Shop Settings
 - P1: Editable marquee/offer text from Shop Settings
 - P2: Delete uploaded files (soft-delete exists in DB)
-- P2: Split AdminDashboard.js (~730 lines) into per-tab components
+- P2: Split AdminDashboard.js into per-tab components
 - P2: Move WhatsApp number to env/settings for frontend (currently hardcoded in App.js/ProductDetail.js)

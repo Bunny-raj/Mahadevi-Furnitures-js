@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Package, ShoppingBag, LogOut, Plus, Pencil, Trash2, Store, Upload, Star, MessageSquareQuote, Check, EyeOff } from "lucide-react";
+import { Package, ShoppingBag, LogOut, Plus, Pencil, Trash2, Store, Upload, Star, MessageSquareQuote, Check, EyeOff, Reply } from "lucide-react";
 import { toast } from "sonner";
 import { api, formatApiError, imgUrl } from "@/lib/api";
 import { inr } from "@/lib/format";
@@ -45,6 +45,9 @@ export default function AdminDashboard() {
   const [uploading, setUploading] = useState(false);
   const [settingsForm, setSettingsForm] = useState({ address: "", hours: "", map_embed_url: "", logo_url: "" });
   const [settingsSaving, setSettingsSaving] = useState(false);
+  const [replyReview, setReplyReview] = useState(null);
+  const [replyText, setReplyText] = useState("");
+  const [replySaving, setReplySaving] = useState(false);
 
   const fetchProducts = useCallback(() => {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
@@ -157,6 +160,26 @@ export default function AdminDashboard() {
       toast.success("Review deleted.");
     } catch (err) {
       toast.error(formatApiError(err));
+    }
+  };
+
+  const openReply = (review) => {
+    setReplyReview(review);
+    setReplyText(review.owner_reply || "");
+  };
+
+  const saveReply = async (e) => {
+    e.preventDefault();
+    setReplySaving(true);
+    try {
+      await api.put(`/reviews/${replyReview.id}/reply`, { reply: replyText });
+      setReviews((prev) => prev.map((r) => (r.id === replyReview.id ? { ...r, owner_reply: replyText.trim() } : r)));
+      toast.success(replyText.trim() ? "Reply posted — visible under the review on the website." : "Reply removed.");
+      setReplyReview(null);
+    } catch (err) {
+      toast.error(formatApiError(err));
+    } finally {
+      setReplySaving(false);
     }
   };
 
@@ -443,6 +466,9 @@ export default function AdminDashboard() {
                         </TableCell>
                         <TableCell className="max-w-72 text-sm font-light text-[#5C564F]">
                           <span className="line-clamp-2">{r.text}</span>
+                          {r.owner_reply && (
+                            <span className="mt-1 block text-xs text-[#8C5A35] line-clamp-1">↳ Your reply: {r.owner_reply}</span>
+                          )}
                         </TableCell>
                         <TableCell>
                           {r.approved ? (
@@ -473,6 +499,19 @@ export default function AdminDashboard() {
                               <Check className="h-4 w-4" />
                             </button>
                           )}
+                          <button
+                            data-testid={`reply-review-${r.id}`}
+                            aria-label={`Reply to review by ${r.name}`}
+                            onClick={() => openReply(r)}
+                            className={`mr-2 inline-flex h-9 w-9 items-center justify-center border transition-colors duration-300 ${
+                              r.owner_reply
+                                ? "border-[#8C5A35] text-[#8C5A35]"
+                                : "border-[#DCD6CD] text-[#5C564F] hover:border-[#8C5A35] hover:text-[#8C5A35]"
+                            }`}
+                            title={r.owner_reply ? "Edit your reply" : "Reply to this review"}
+                          >
+                            <Reply className="h-4 w-4" />
+                          </button>
                           <button
                             data-testid={`delete-review-${r.id}`}
                             aria-label={`Delete review by ${r.name}`}
@@ -565,6 +604,40 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+
+      <Dialog open={!!replyReview} onOpenChange={(v) => !v && setReplyReview(null)}>
+        <DialogContent data-testid="reply-dialog" aria-describedby={undefined} className="rounded-none border-[#DCD6CD] bg-[#FAF7F2] sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-display text-2xl tracking-tight text-[#1A1817]">
+              Reply to {replyReview?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {replyReview && (
+            <form onSubmit={saveReply} className="mt-2 flex flex-col gap-4">
+              <p className="border-l-2 border-[#DCD6CD] pl-3 text-sm font-light italic text-[#5C564F]">“{replyReview.text}”</p>
+              <div>
+                <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Your Reply (shown under the review)</Label>
+                <Textarea
+                  data-testid="reply-text-input"
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  placeholder="e.g. Thank you! It was a pleasure furnishing your home."
+                  className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
+                />
+                <p className="mt-1.5 text-[11px] font-light text-[#5C564F]">Leave empty and save to remove an existing reply.</p>
+              </div>
+              <Button
+                data-testid="reply-save-button"
+                type="submit"
+                disabled={replySaving}
+                className="rounded-none bg-[#8C5A35] py-6 text-xs uppercase tracking-[0.25em] text-[#FAF7F2] hover:bg-[#734A2C]"
+              >
+                {replySaving ? "Saving…" : "Save Reply"}
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent data-testid="product-form-dialog" aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto rounded-none border-[#DCD6CD] bg-[#FAF7F2] sm:max-w-lg">

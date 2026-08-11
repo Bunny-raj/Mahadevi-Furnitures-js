@@ -10,12 +10,22 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-3 md:px-10 md:py-24">
         <div>
           {settings?.logo_url ? (
-            <img
-              src={imgUrl(settings.logo_url)}
-              alt="Mahadevi Furnitures"
-              data-testid="footer-logo-image"
-              className="h-12 w-auto object-contain"
-            />
+            <span className="flex items-center gap-4">
+              <img
+                src={imgUrl(settings.logo_url)}
+                alt="Mahadevi Furnitures"
+                data-testid="footer-logo-image"
+                className="h-16 w-16 rounded-full border border-[#EAE3D6]/20 object-cover"
+              />
+              <span>
+                <span className="font-display block text-2xl font-bold tracking-tight text-[#FAF7F2]">
+                  MAHADEVI
+                </span>
+                <span className="mt-1 block text-[10px] uppercase tracking-[0.45em] text-[#8C5A35]">
+                  Furnitures
+                </span>
+              </span>
+            </span>
           ) : (
             <>
               <span className="font-display block text-2xl font-bold tracking-tight text-[#FAF7F2]">

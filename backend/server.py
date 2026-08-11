@@ -153,6 +153,10 @@ class ReviewApproveIn(BaseModel):
     approved: bool = True
 
 
+class ReviewReplyIn(BaseModel):
+    reply: str = ""
+
+
 VALID_ORDER_STATUSES = {"pending", "confirmed", "delivered", "cancelled"}
 
 
@@ -336,6 +340,14 @@ async def approve_review(review_id: str, body: ReviewApproveIn, user: dict = Dep
 async def delete_review(review_id: str, user: dict = Depends(get_current_user)):
     result = await db.reviews.delete_one({"id": review_id})
     if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return {"ok": True}
+
+
+@api_router.put("/reviews/{review_id}/reply")
+async def reply_to_review(review_id: str, body: ReviewReplyIn, user: dict = Depends(get_current_user)):
+    result = await db.reviews.update_one({"id": review_id}, {"$set": {"owner_reply": body.reply.strip()}})
+    if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Review not found")
     return {"ok": True}
 

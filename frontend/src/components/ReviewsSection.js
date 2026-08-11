@@ -69,6 +69,12 @@ export default function ReviewsSection() {
                     <blockquote className="mt-4 flex-1 text-sm font-light leading-relaxed text-[#5C564F]">
                       “{r.text}”
                     </blockquote>
+                    {r.owner_reply && (
+                      <div className="mt-4 border-l-2 border-[#8C5A35] bg-[#FAF7F2] p-4" data-testid={`owner-reply-${r.id}`}>
+                        <p className="text-[10px] uppercase tracking-[0.2em] text-[#8C5A35]">Reply from Mahadevi Furnitures</p>
+                        <p className="mt-1.5 text-sm font-light leading-relaxed text-[#5C564F]">{r.owner_reply}</p>
+                      </div>
+                    )}
                     <figcaption className="mt-6 border-t border-[#DCD6CD] pt-4 text-xs uppercase tracking-[0.22em] text-[#1A1817]">
                       {r.name}
                     </figcaption>
