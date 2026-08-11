@@ -136,6 +136,7 @@ class OrderIn(BaseModel):
     phone: str
     address: str = ""
     color: str = ""
+    options: dict = {}
 
 
 class OrderStatusIn(BaseModel):
@@ -277,10 +278,12 @@ async def create_order(body: OrderIn):
     doc["status"] = "pending"
     await db.orders.insert_one({**doc})
     color_line = f"Colour: {body.color}\n" if body.color else ""
+    options_lines = "".join(f"{k}: {v}\n" for k, v in body.options.items() if v)
     message = (
         f"Hello MAHADEVI FURNITURES! I would like to place an order.\n\n"
         f"Product: {body.product_name}\n"
         f"{color_line}"
+        f"{options_lines}"
         f"Quantity: {body.quantity}\n"
         f"Name: {body.name}\n"
         f"Phone: {body.phone}\n"

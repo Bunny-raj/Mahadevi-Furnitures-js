@@ -400,6 +400,11 @@ export default function AdminDashboard() {
                         <TableCell className="text-sm font-light text-[#1A1817]">
                           {o.product_name}
                           {o.color && <span className="block text-xs text-[#8C5A35]">Colour: {o.color}</span>}
+                          {o.options && Object.keys(o.options).length > 0 && (
+                            <span className="block max-w-52 text-xs text-[#5C564F]">
+                              {Object.entries(o.options).map(([k, v]) => `${k}: ${v}`).join(" · ")}
+                            </span>
+                          )}
                         </TableCell>
                         <TableCell className="text-sm font-light text-[#5C564F]">{o.quantity}</TableCell>
                         <TableCell className="max-w-56 truncate text-sm font-light text-[#5C564F]">{o.address || "—"}</TableCell>

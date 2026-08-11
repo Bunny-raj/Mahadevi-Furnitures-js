@@ -14,24 +14,37 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import { inr, colorHex, colorSlug } from "@/lib/format";
+import { MATTRESS_OPTIONS } from "@/constants/mattressOptions";
 
 export default function OrderDialog({ product, open, onOpenChange, initialColor = "" }) {
   const [form, setForm] = useState({ name: "", phone: "", quantity: 1, address: "", color: "" });
+  const [options, setOptions] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (open) setForm((f) => ({ ...f, color: initialColor || "" }));
+    if (open) {
+      setForm((f) => ({ ...f, color: initialColor || "" }));
+      setOptions({});
+    }
   }, [open, initialColor]);
 
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
   const qty = Math.max(1, Number(form.quantity) || 1);
   const colors = product.colors || [];
+  const isMattress = product.category === "Mattresses";
 
   const submit = async (e) => {
     e.preventDefault();
     if (colors.length > 0 && !form.color) {
       toast.error("Please select a colour first.");
       return;
+    }
+    if (isMattress) {
+      const missing = MATTRESS_OPTIONS.find((g) => !options[g.key]);
+      if (missing) {
+        toast.error(`Please select a ${missing.key.toLowerCase()} first.`);
+        return;
+      }
     }
     setLoading(true);
     try {
@@ -43,11 +56,13 @@ export default function OrderDialog({ product, open, onOpenChange, initialColor 
         phone: form.phone,
         address: form.address,
         color: form.color,
+        options,
       });
       window.open(data.wa_link, "_blank");
       toast.success("Order ready — opening WhatsApp to send it to us.");
       onOpenChange(false);
       setForm({ name: "", phone: "", quantity: 1, address: "", color: "" });
+      setOptions({});
     } catch (err) {
       toast.error("Could not create the order. Please try again.");
     } finally {
@@ -57,7 +72,7 @@ export default function OrderDialog({ product, open, onOpenChange, initialColor 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent data-testid="order-dialog" className="rounded-none border-[#DCD6CD] bg-[#FAF7F2] sm:max-w-md">
+      <DialogContent data-testid="order-dialog" className="max-h-[90vh] overflow-y-auto rounded-none border-[#DCD6CD] bg-[#FAF7F2] sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl tracking-tight text-[#1A1817]">
             Order via WhatsApp
@@ -67,6 +82,28 @@ export default function OrderDialog({ product, open, onOpenChange, initialColor 
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="mt-2 flex flex-col gap-4">
+          {isMattress && MATTRESS_OPTIONS.map((group) => (
+            <div key={group.key}>
+              <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">{group.key}</Label>
+              <div className="mt-2 flex flex-wrap gap-2" data-testid={`mattress-${group.key.toLowerCase()}-picker`}>
+                {group.values.map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    data-testid={`mattress-option-${group.key.toLowerCase()}-${v.toLowerCase().replace(/\s+/g, "-")}`}
+                    onClick={() => setOptions({ ...options, [group.key]: v })}
+                    className={`border px-3 py-2 text-xs transition-colors duration-200 ${
+                      options[group.key] === v
+                        ? "border-[#8C5A35] bg-[#8C5A35]/10 text-[#8C5A35]"
+                        : "border-[#DCD6CD] bg-white text-[#5C564F] hover:border-[#8C5A35]"
+                    }`}
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
           {colors.length > 0 && (
             <div>
               <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Choose Colour</Label>

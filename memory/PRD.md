@@ -44,6 +44,10 @@
 - New products: Rainbow Stackable Plastic Chairs, Classic Teak Tea Table, Glass-Top Tea Table, Relaxwell Ortho Plus Mattress (featured); old plastic chairs photo replaced with AI-generated set-of-4 image
 - Relaxwell Mattresses home page banner ("Top in our industry.") with CTA → /catalogue?category=Mattresses; seed data updated for fresh deploys
 
+## Implemented (2026-08-11 e)
+- Mattress ordering options (per attached Relaxwell chart): Collection (Natural Elements/Elevate/Iconic/Dynamic/Orthopedic), Material (Coir/Spring/Foam/Natural Latex/Memory Foam), Firmness (Extra Firm/Medium Firm/Soft), Size (Single/Double/Queen/King) — required pill selectors in order dialog for category "Mattresses"; all selections stored on order + included in WhatsApp message; admin Orders tab shows them under product name
+- OrderIn.options dict field; constants in /app/frontend/src/constants/mattressOptions.js
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)
