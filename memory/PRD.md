@@ -54,6 +54,10 @@
 ## Implemented (2026-08-11 g)
 - All 17 Relaxwell mattress models added with REAL images cropped from owner's screenshots (uploaded to object storage) in the exact row order shown: ActivMatt, Maxima, Infinia, Nature Therapy, Royale, Majestic ET, Aristo, Aristo PT, VitaSleep, Cosmos, Exotica Dlx ET, Luxurio, Luxurio ET, OrthoFit, Regal, TechnoSoft, Prism — with real prices/MRPs; original "SAVE ₹" badges trimmed from images; ordering via created_at sequence
 
+## Implemented (2026-08-11 h)
+- 17 Nilkamal plastic chairs added with real images cropped from owner's screenshots, in row order; duplicate colour variants merged into single products with colour palettes: Luxe (Teal/Black/Bright Red & Black), Aura (Gold/Pearl White), Grace (Pearl White/Gold); "% OFF"/heart badges trimmed from images; new colour hexes (teal, charcoal grey, pearl white, dark beige, rust brown) added to format.js COLOR_MAP
+- Full list: Ortho Comfort, Novella 10, Novella 09, Club, Luxe, Arena Woven, Arena Cushioned, Ace, Bliss, Glam, Elevate, Aura, Grace, Startrek, Captain, Paradise, Octo Junior Kids
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)
