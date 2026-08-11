@@ -126,6 +126,7 @@ class ProductIn(BaseModel):
     featured: bool = False
     colors: list[str] = []
     sold_out: bool = False
+    color_images: dict = {}
 
 
 class OrderIn(BaseModel):

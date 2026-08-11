@@ -61,6 +61,12 @@
 ## Implemented (2026-08-11 i)
 - Second Nilkamal chair batch (14 new + 2 merges → 33 total plastic chairs): CHR2146, Eeezy Go, Lounger, Exotica, CHR4025, CHR2061 (merged Pear Wood variant), CHR4002, CHR2005, CHR2231, CHR2101, Enamora, Novella 08 (4 colour variants merged: Biscuit/Red/Milky White/Orange/Grey), Captain Arm Chair, Captain Cushion Metallic Dark; Novella 09 colours extended (Orange/Biscuit/Red/Light Green); 12 new colour hexes in COLOR_MAP; all images cropped from screenshots, badges trimmed, verified serving 200
 
+## Implemented (2026-08-11 j)
+- Image Magnifier on product detail pages: hover-to-zoom (2.2x lens following cursor, click toggles on mobile) with "Hover to zoom" hint
+- Per-colour product photos: product.color_images dict {colour: url}; detail page image swaps when customer picks a colour (falls back to main image); admin form "Photos per Colour" section with upload/remove per colour; stale colour entries pruned on save
+- Real per-colour photos set: Novella 08 (Biscuit main + Red/Milky White/Orange), Novella 09 (Biscuit/Red), CHR2061 (Pear Wood), Luxe (Bright Red & Black), Aura (Pearl White), Grace (Gold)
+- FIXED image misassignment from batch-2 chairs (crop row mapping was shifted): corrected main images for CHR4025, CHR2061, CHR4002, CHR2005, CHR2231, CHR2101, Enamora, Novella 08, Captain Arm, Captain Metallic
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)

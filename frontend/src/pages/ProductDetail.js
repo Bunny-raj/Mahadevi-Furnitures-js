@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, MessageCircle, ShieldCheck, Truck, BadgeIndianRupee } from "lucide-react";
+import { ArrowLeft, MessageCircle, ShieldCheck, Truck, BadgeIndianRupee, ZoomIn } from "lucide-react";
 import { api, imgUrl } from "@/lib/api";
 import { inr, discountPct, colorHex, colorSlug } from "@/lib/format";
 import Reveal from "@/components/Reveal";
@@ -14,6 +14,16 @@ export default function ProductDetail() {
   const [notFound, setNotFound] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState("");
+  const [zoom, setZoom] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+
+  const onZoomMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setZoomPos({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
 
   useEffect(() => {
     setProduct(null);
@@ -64,13 +74,31 @@ export default function ProductDetail() {
 
       <div className="mt-10 grid gap-14 lg:grid-cols-2">
         <Reveal>
-          <div className="sticky top-28 aspect-[4/5] overflow-hidden bg-[#EAE3D6]">
+          <div
+            className="sticky top-28 aspect-[4/5] overflow-hidden bg-[#EAE3D6]"
+            data-testid="product-image-magnifier"
+            onMouseEnter={() => setZoom(true)}
+            onMouseLeave={() => setZoom(false)}
+            onMouseMove={onZoomMove}
+            onClick={() => setZoom((z) => !z)}
+            style={{ cursor: zoom ? "zoom-out" : "zoom-in" }}
+          >
             <img
-              src={imgUrl(product.image_url)}
-              alt={product.name}
+              key={(selectedColor && product.color_images?.[selectedColor]) || product.image_url}
+              src={imgUrl((selectedColor && product.color_images?.[selectedColor]) || product.image_url)}
+              alt={selectedColor ? `${product.name} — ${selectedColor}` : product.name}
               data-testid="product-detail-image"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-200 ease-out"
+              style={{
+                transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+                transform: zoom ? "scale(2.2)" : "scale(1)",
+              }}
             />
+            {!zoom && (
+              <span className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-1.5 bg-[#1A1817]/70 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-[#FAF7F2] backdrop-blur-sm">
+                <ZoomIn className="h-3 w-3" /> Hover to zoom
+              </span>
+            )}
             {product.sold_out ? (
               <span
                 data-testid="product-sold-out-badge"

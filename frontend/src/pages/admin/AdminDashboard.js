@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Package, ShoppingBag, LogOut, Plus, Pencil, Trash2, Store, Upload, Star, MessageSquareQuote, Check, EyeOff, Reply } from "lucide-react";
 import { toast } from "sonner";
 import { api, formatApiError, imgUrl } from "@/lib/api";
-import { inr } from "@/lib/format";
+import { inr, colorHex } from "@/lib/format";
 import { useAuth } from "@/context/AuthContext";
 import { CATEGORIES } from "@/constants/categories";
 import {
@@ -21,7 +21,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 
-const EMPTY_FORM = { name: "", category: "Sofas", price: "", mrp: "", image_url: "", description: "", featured: false, colors: "", sold_out: false };
+const EMPTY_FORM = { name: "", category: "Sofas", price: "", mrp: "", image_url: "", description: "", featured: false, colors: "", sold_out: false, color_images: {} };
 
 const ORDER_STATUSES = ["pending", "confirmed", "delivered", "cancelled"];
 const STATUS_STYLES = {
@@ -86,18 +86,20 @@ export default function AdminDashboard() {
 
   const openEdit = (p) => {
     setEditing(p);
-    setForm({ name: p.name, category: p.category, price: String(p.price), mrp: p.mrp ? String(p.mrp) : "", image_url: p.image_url, description: p.description, featured: p.featured, colors: (p.colors || []).join(", "), sold_out: !!p.sold_out });
+    setForm({ name: p.name, category: p.category, price: String(p.price), mrp: p.mrp ? String(p.mrp) : "", image_url: p.image_url, description: p.description, featured: p.featured, colors: (p.colors || []).join(", "), sold_out: !!p.sold_out, color_images: p.color_images || {} });
     setDialogOpen(true);
   };
 
   const save = async (e) => {
     e.preventDefault();
     setSaving(true);
+    const colorList = String(form.colors || "").split(",").map((c) => c.trim()).filter(Boolean);
     const payload = {
       ...form,
       price: Number(form.price) || 0,
       mrp: Number(form.mrp) || 0,
-      colors: String(form.colors || "").split(",").map((c) => c.trim()).filter(Boolean),
+      colors: colorList,
+      color_images: Object.fromEntries(Object.entries(form.color_images || {}).filter(([c, u]) => colorList.includes(c) && u)),
     };
     try {
       if (editing) {
@@ -188,6 +190,21 @@ export default function AdminDashboard() {
     fd.append("file", file);
     const { data } = await api.post("/upload", fd, { headers: { "Content-Type": "multipart/form-data" } });
     onDone(data.url);
+  };
+
+  const onPickColorImage = (color) => async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setUploading(true);
+    try {
+      await uploadImage(f, (url) => setForm((prev) => ({ ...prev, color_images: { ...prev.color_images, [color]: url } })));
+      toast.success(`Photo for ${color} uploaded.`);
+    } catch (err) {
+      toast.error(formatApiError(err));
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   };
 
   const onPickImage = async (e) => {
@@ -744,6 +761,44 @@ export default function AdminDashboard() {
               />
               <p className="mt-1.5 text-[11px] font-light text-[#5C564F]">Customers will pick one of these colours while ordering. Leave empty if not applicable.</p>
             </div>
+            {String(form.colors || "").split(",").map((c) => c.trim()).filter(Boolean).length > 0 && (
+              <div className="border border-[#DCD6CD] bg-white p-4" data-testid="color-images-section">
+                <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Photos per Colour (optional)</Label>
+                <p className="mt-1 text-[11px] font-light text-[#5C564F]">Customers see this photo when they pick the colour. Colours without a photo show the main image.</p>
+                <div className="mt-3 flex flex-col gap-2">
+                  {String(form.colors || "").split(",").map((c) => c.trim()).filter(Boolean).map((c) => (
+                    <div key={c} className="flex items-center gap-3">
+                      <span className="h-4 w-4 shrink-0 rounded-full border border-black/10" style={{ backgroundColor: colorHex(c) }} />
+                      <span className="w-32 truncate text-xs text-[#1A1817]">{c}</span>
+                      {form.color_images?.[c] ? (
+                        <>
+                          <img src={imgUrl(form.color_images[c])} alt={c} className="h-10 w-10 border border-[#DCD6CD] object-cover" />
+                          <button
+                            type="button"
+                            data-testid={`remove-color-image-${c.toLowerCase().replace(/\s+/g, "-")}`}
+                            onClick={() => setForm((prev) => { const ci = { ...prev.color_images }; delete ci[c]; return { ...prev, color_images: ci }; })}
+                            className="text-[10px] uppercase tracking-[0.15em] text-red-500 underline underline-offset-2"
+                          >
+                            Remove
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <input id={`color-img-${c}`} type="file" accept="image/*" onChange={onPickColorImage(c)} className="hidden" />
+                          <label
+                            htmlFor={`color-img-${c}`}
+                            data-testid={`upload-color-image-${c.toLowerCase().replace(/\s+/g, "-")}`}
+                            className="flex cursor-pointer items-center gap-1.5 border border-[#DCD6CD] px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-[#5C564F] transition-colors duration-300 hover:border-[#8C5A35] hover:text-[#8C5A35]"
+                          >
+                            <Upload className="h-3 w-3" /> {uploading ? "…" : "Upload"}
+                          </label>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex items-center justify-between border border-[#DCD6CD] bg-white px-4 py-3">
               <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Show on Homepage (Featured)</Label>
               <Switch
