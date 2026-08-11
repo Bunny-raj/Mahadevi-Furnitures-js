@@ -1,10 +1,12 @@
 export const CATEGORIES = [
   "Sofas",
   "Beds",
+  "Mattresses",
   "Wardrobes",
   "Dining Tables",
+  "Tea Tables",
   "Dressing Tables",
-  "Chairs",
+  "Plastic Chairs",
   "Computer Tables",
   "Office Tables",
   "Recliners",

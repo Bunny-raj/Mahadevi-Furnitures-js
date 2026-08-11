@@ -12,6 +12,7 @@ import useSettings from "@/hooks/useSettings";
 const HERO_IMAGE = "https://images.pexels.com/photos/27638192/pexels-photo-27638192.jpeg?auto=compress&cs=tinysrgb&w=1600";
 const SPOTLIGHT_IMAGE = "https://images.pexels.com/photos/7018400/pexels-photo-7018400.jpeg?auto=compress&cs=tinysrgb&w=1200";
 const CRAFT_IMAGE = "https://images.pexels.com/photos/32331030/pexels-photo-32331030.png?auto=compress&cs=tinysrgb&w=1200";
+const RELAXWELL_IMAGE = "https://static.prod-images.emergentagent.com/jobs/21ec0102-3b40-4b56-8b89-5ce04b8d3554/images/839840da2e3381c55f80d7684575dfd22c38832bff9d57d9d3aba163ae3f8b7e.jpeg";
 
 const lineVariants = {
   hidden: { y: "115%" },
@@ -176,6 +177,39 @@ export default function Home() {
               <ProductCard product={p} />
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      <section data-testid="relaxwell-banner" className="relative overflow-hidden bg-[#1A1817]">
+        <img
+          src={RELAXWELL_IMAGE}
+          alt="Relaxwell Mattresses — premium comfort"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1A1817]/90 via-[#1A1817]/60 to-[#1A1817]/10" />
+        <div className="relative mx-auto max-w-7xl px-6 py-24 md:px-10 md:py-36">
+          <Reveal>
+            <p className="text-xs uppercase tracking-[0.4em] text-[#D9C9BA]">Now at Mahadevi Furnitures</p>
+            <h2 className="font-display mt-4 text-4xl font-medium leading-tight tracking-tight text-[#FAF7F2] md:text-6xl">
+              Relaxwell <span className="italic text-[#D9C9BA]">Mattresses</span>
+            </h2>
+            <p className="font-display mt-3 text-xl italic text-[#8C5A35] md:text-2xl" data-testid="relaxwell-tagline">
+              Top in our industry.
+            </p>
+            <p className="mt-6 max-w-md text-sm font-light leading-relaxed text-[#EAE3D6]/80">
+              Sleep on the mattress trusted by thousands of homes — orthopedic support,
+              premium quilted comfort and lasting durability, at direct shop prices.
+            </p>
+            <Link
+              to="/catalogue?category=Mattresses"
+              data-testid="relaxwell-banner-cta"
+              className="group mt-10 inline-flex items-center gap-3 bg-[#FAF7F2] px-8 py-4 text-xs uppercase tracking-[0.25em] text-[#1A1817] transition-colors duration-300 hover:bg-[#8C5A35] hover:text-[#FAF7F2]"
+            >
+              Shop Relaxwell Mattresses
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </Reveal>
         </div>
       </section>
 

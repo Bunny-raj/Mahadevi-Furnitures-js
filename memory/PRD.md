@@ -39,6 +39,11 @@
 - Navbar + footer show circular logo emblem beside the MAHADEVI wordmark
 - Second contact number +91 93933 00111 added to footer "Talk To Us" (2026-08-11); WhatsApp orders still go to +91 99497 00111
 
+## Implemented (2026-08-11 d)
+- Categories updated: "Chairs" → "Plastic Chairs"; new "Tea Tables" and "Mattresses" categories
+- New products: Rainbow Stackable Plastic Chairs, Classic Teak Tea Table, Glass-Top Tea Table, Relaxwell Ortho Plus Mattress (featured); old plastic chairs photo replaced with AI-generated set-of-4 image
+- Relaxwell Mattresses home page banner ("Top in our industry.") with CTA → /catalogue?category=Mattresses; seed data updated for fresh deploys
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)
