@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -13,17 +13,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
-import { inr } from "@/lib/format";
+import { inr, colorHex, colorSlug } from "@/lib/format";
 
-export default function OrderDialog({ product, open, onOpenChange }) {
-  const [form, setForm] = useState({ name: "", phone: "", quantity: 1, address: "" });
+export default function OrderDialog({ product, open, onOpenChange, initialColor = "" }) {
+  const [form, setForm] = useState({ name: "", phone: "", quantity: 1, address: "", color: "" });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) setForm((f) => ({ ...f, color: initialColor || "" }));
+  }, [open, initialColor]);
 
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
   const qty = Math.max(1, Number(form.quantity) || 1);
+  const colors = product.colors || [];
 
   const submit = async (e) => {
     e.preventDefault();
+    if (colors.length > 0 && !form.color) {
+      toast.error("Please select a colour first.");
+      return;
+    }
     setLoading(true);
     try {
       const { data } = await api.post("/orders", {
@@ -33,11 +42,12 @@ export default function OrderDialog({ product, open, onOpenChange }) {
         name: form.name,
         phone: form.phone,
         address: form.address,
+        color: form.color,
       });
       window.open(data.wa_link, "_blank");
       toast.success("Order ready — opening WhatsApp to send it to us.");
       onOpenChange(false);
-      setForm({ name: "", phone: "", quantity: 1, address: "" });
+      setForm({ name: "", phone: "", quantity: 1, address: "", color: "" });
     } catch (err) {
       toast.error("Could not create the order. Please try again.");
     } finally {
@@ -57,6 +67,29 @@ export default function OrderDialog({ product, open, onOpenChange }) {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="mt-2 flex flex-col gap-4">
+          {colors.length > 0 && (
+            <div>
+              <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Choose Colour</Label>
+              <div className="mt-2 flex flex-wrap gap-2" data-testid="order-color-picker">
+                {colors.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    data-testid={`order-color-${colorSlug(c)}`}
+                    onClick={() => setForm({ ...form, color: c })}
+                    className={`flex items-center gap-2 border px-3 py-2 text-xs transition-colors duration-200 ${
+                      form.color === c
+                        ? "border-[#8C5A35] bg-[#8C5A35]/10 text-[#8C5A35]"
+                        : "border-[#DCD6CD] bg-white text-[#5C564F] hover:border-[#8C5A35]"
+                    }`}
+                  >
+                    <span className="h-3.5 w-3.5 rounded-full border border-black/10" style={{ backgroundColor: colorHex(c) }} />
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <div>
             <Label htmlFor="order-name" className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Your Name</Label>
             <Input

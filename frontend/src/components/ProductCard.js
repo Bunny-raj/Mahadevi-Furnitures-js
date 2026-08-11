@@ -11,19 +11,30 @@ export default function ProductCard({ product }) {
       className="group block"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-[#EAE3D6]">
-        {discountPct(product) > 0 && (
+        {product.sold_out ? (
           <span
-            data-testid={`discount-badge-${product.id}`}
-            className="absolute left-4 top-4 z-10 bg-[#8C5A35] px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-[#FAF7F2]"
+            data-testid={`sold-out-badge-${product.id}`}
+            className="absolute left-4 top-4 z-10 bg-[#1A1817] px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-[#FAF7F2]"
           >
-            {discountPct(product)}% Off
+            Sold Out
           </span>
+        ) : (
+          discountPct(product) > 0 && (
+            <span
+              data-testid={`discount-badge-${product.id}`}
+              className="absolute left-4 top-4 z-10 bg-[#8C5A35] px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-[#FAF7F2]"
+            >
+              {discountPct(product)}% Off
+            </span>
+          )
         )}
         <img
           src={imgUrl(product.image_url)}
           alt={product.name}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className={`h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${
+            product.sold_out ? "opacity-60 grayscale" : ""
+          }`}
         />
         <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center bg-[#FAF7F2]/90 opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
           <ArrowUpRight className="h-4 w-4 text-[#1A1817]" />

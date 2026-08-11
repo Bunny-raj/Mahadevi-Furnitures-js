@@ -1,0 +1,78 @@
+{
+  "summary": "Tested all four new features and key regressions through 18 public-URL pytest cases plus Playwright end-to-end flows. Reviews, review moderation, uploads, colour-required ordering, WhatsApp colour prefill, order status persistence, seeded colours, backend product update, catalogue browsing, and public sold-out rendering work. Found missing admin product colour/sold-out controls, settings form data-loss risk, and two auth/infrastructure failures.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/auth/login",
+        "issue": "Brute-force lockout is not reliable through the public endpoint: six failures for one new email returned 401 instead of the sixth returning 429. request.client.host identifies alternating ingress proxy IPs (10.49.136.2/.6), so attempts are split across identifiers; it can also aggregate unrelated users behind a proxy.",
+        "priority": "HIGH"
+      },
+      {
+        "endpoint": "OPTIONS /api/auth/login",
+        "issue": "Public preflight returns Access-Control-Allow-Origin: * together with Access-Control-Allow-Credentials: true rather than the configured explicit frontend origin. This is invalid for credentialed cross-origin browser requests and fails the auth playbook requirement.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "POST /api/reviews/upload",
+        "issue": "Image validation trusts the multipart Content-Type only; a malformed arbitrary byte payload declared image/png was accepted, stored, and served as image/png. Validate image signatures/decoding before storage."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AdminDashboard product form",
+        "issue": "Edit/Add Product dialog has neither the Available Colours input nor Mark as Sold Out switch. Both required data-testid elements have count 0, so admins cannot manage either new property through the UI.",
+        "selector": "[data-testid='product-form-colors'], [data-testid='product-form-sold-out']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Admin Shop Settings reload/edit",
+        "issue": "Persisted /api/settings values are never fetched into settingsForm. After storing TEST_Settings_Address/Hours and reloading, both form fields were blank; saving another field would overwrite existing shop details with empty strings.",
+        "affected_selectors": [
+          "[data-testid='settings-address-input']",
+          "[data-testid='settings-hours-input']",
+          "[data-testid='settings-save-button']"
+        ]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Render and bind product-form-colors and product-form-sold-out controls in AdminDashboard before the save button.",
+    "Fetch /api/settings for authenticated admins and initialize settingsForm before edits to prevent destructive blank overwrites.",
+    "Rework login throttling to key on a trustworthy normalized client IP plus account/email (correct proxy handling), then verify deterministic lockout after five failures.",
+    "Fix public ingress CORS preflight so credentialed requests return the explicit configured origin, never '*'.",
+    "Add colours and sold_out defaults directly to SEED_PRODUCTS or implement an idempotent migration; a fresh database currently seeds raw product dictionaries without the claimed colour palettes.",
+    "Validate uploaded image bytes rather than trusting client MIME type."
+  ],
+  "critical_code_review_comments": [
+    "AdminDashboard prepares colors/sold_out in EMPTY_FORM, openEdit, and save payload, but omits their JSX controls entirely.",
+    "SEED_PRODUCTS entries contain no colors/sold_out values and startup inserts those raw dictionaries; the current database passes only because it was separately populated, while a fresh deployment will violate the all-12-products-have-colours requirement.",
+    "AdminDashboard never calls GET /settings or hydrates settingsForm, creating a data-loss path on save.",
+    "login uses request.client.host, which is the rotating ingress proxy in this environment; observed backend logs confirm one client flow alternating between 10.49.136.2 and 10.49.136.6.",
+    "put_object/get_object use synchronous requests inside async FastAPI handlers, blocking the event loop during object storage I/O.",
+    "Review approval accepts an unvalidated dict and bool(body.get(...)); values such as the string 'false' become true. Use a Pydantic boolean model.",
+    "Frontend WhatsApp URLs/numbers are hardcoded in App.js and ProductDetail.js instead of coming from configuration."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {
+    "backend": "88.9% (16/18 pytest cases passed)",
+    "frontend": "80% of tested critical flows passed; 2 reproducible frontend defects"
+  },
+  "seed_data_creation": "Created temporary TEST_ reviews, orders, product, settings values, login-attempt records, and one storage-upload record. Database test data was removed; the seeded reviews remain approved, settings/product state was restored, and no products remain sold out. The uploaded object may remain orphaned in external storage because no object-delete endpoint is exposed, though its DB record was removed and it is no longer publicly retrievable.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Use credentials from /app/memory/test_credentials.md (current password Mahadevi@2026, not admin123). Re-run backend_test.py and specifically retest the admin product form controls and settings prefill. Public reviews/moderation, order colour/status, and sold-out public rendering passed. Initial popup test failures were test-selector issues and were corrected by selecting button[data-testid^='order-color-'] and intercepting window.open.",
+  "rca_of_the_issue": "The two principal UI defects are implementation omissions: product state/payload support exists but controls were not rendered, and settings state is initialized to blanks without a GET hydration effect. Auth lockout uses the proxy socket address, which changes across requests, while ingress overrides credentialed preflight origin with '*'."
+}

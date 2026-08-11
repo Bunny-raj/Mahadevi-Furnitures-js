@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import Reveal from "@/components/Reveal";
 import Marquee from "@/components/Marquee";
 import ProductCard from "@/components/ProductCard";
+import ReviewsSection from "@/components/ReviewsSection";
 import useSettings from "@/hooks/useSettings";
 
 const HERO_IMAGE = "https://images.pexels.com/photos/27638192/pexels-photo-27638192.jpeg?auto=compress&cs=tinysrgb&w=1600";
@@ -248,6 +249,8 @@ export default function Home() {
           </Link>
         </Reveal>
       </section>
+
+      <ReviewsSection />
 
       <section data-testid="showroom-section" className="noise-overlay bg-[#EAE3D6] py-20 md:py-28">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-2 md:px-10">

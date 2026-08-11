@@ -124,6 +124,8 @@ class ProductIn(BaseModel):
     description: str = ""
     image_url: str = ""
     featured: bool = False
+    colors: list[str] = []
+    sold_out: bool = False
 
 
 class OrderIn(BaseModel):
@@ -133,6 +135,25 @@ class OrderIn(BaseModel):
     name: str
     phone: str
     address: str = ""
+    color: str = ""
+
+
+class OrderStatusIn(BaseModel):
+    status: str
+
+
+class ReviewIn(BaseModel):
+    name: str
+    rating: int = 5
+    text: str
+    photo_url: str = ""
+
+
+class ReviewApproveIn(BaseModel):
+    approved: bool = True
+
+
+VALID_ORDER_STATUSES = {"pending", "confirmed", "delivered", "cancelled"}
 
 
 @api_router.get("/")
@@ -143,7 +164,7 @@ async def root():
 @api_router.post("/auth/login")
 async def login(body: LoginIn, request: Request, response: Response):
     email = body.email.lower().strip()
-    identifier = f"{request.client.host}:{email}"
+    identifier = email
     attempts = await db.login_attempts.find_one({"identifier": identifier})
     if attempts and attempts.get("count", 0) >= 5:
         locked_until = attempts.get("locked_until", "")
@@ -249,11 +270,13 @@ async def create_order(body: OrderIn):
     doc = body.model_dump()
     doc["id"] = str(uuid.uuid4())
     doc["created_at"] = datetime.now(timezone.utc).isoformat()
-    doc["status"] = "whatsapp_sent"
+    doc["status"] = "pending"
     await db.orders.insert_one({**doc})
+    color_line = f"Colour: {body.color}\n" if body.color else ""
     message = (
         f"Hello MAHADEVI FURNITURES! I would like to place an order.\n\n"
         f"Product: {body.product_name}\n"
+        f"{color_line}"
         f"Quantity: {body.quantity}\n"
         f"Name: {body.name}\n"
         f"Phone: {body.phone}\n"
@@ -268,6 +291,75 @@ async def list_orders(user: dict = Depends(get_current_user)):
     return await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
 
 
+@api_router.put("/orders/{order_id}/status")
+async def update_order_status(order_id: str, body: OrderStatusIn, user: dict = Depends(get_current_user)):
+    if body.status not in VALID_ORDER_STATUSES:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    result = await db.orders.update_one({"id": order_id}, {"$set": {"status": body.status}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"ok": True, "status": body.status}
+
+
+@api_router.post("/reviews", status_code=201)
+async def create_review(body: ReviewIn):
+    if not body.name.strip() or not body.text.strip():
+        raise HTTPException(status_code=400, detail="Name and review text are required")
+    doc = body.model_dump()
+    doc["rating"] = max(1, min(5, doc["rating"]))
+    doc["id"] = str(uuid.uuid4())
+    doc["approved"] = False
+    doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.reviews.insert_one({**doc})
+    return {"ok": True, "id": doc["id"]}
+
+
+@api_router.get("/reviews")
+async def list_approved_reviews():
+    return await db.reviews.find({"approved": True}, {"_id": 0}).sort("created_at", -1).to_list(100)
+
+
+@api_router.get("/reviews/all")
+async def list_all_reviews(user: dict = Depends(get_current_user)):
+    return await db.reviews.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+
+
+@api_router.put("/reviews/{review_id}/approve")
+async def approve_review(review_id: str, body: ReviewApproveIn, user: dict = Depends(get_current_user)):
+    result = await db.reviews.update_one({"id": review_id}, {"$set": {"approved": body.approved}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return {"ok": True}
+
+
+@api_router.delete("/reviews/{review_id}")
+async def delete_review(review_id: str, user: dict = Depends(get_current_user)):
+    result = await db.reviews.delete_one({"id": review_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return {"ok": True}
+
+
+@api_router.post("/reviews/upload", status_code=201)
+async def upload_review_photo(file: UploadFile = File(...)):
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="Only image files (jpg, png, webp, gif) are allowed")
+    data = await file.read()
+    if len(data) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large (max 5 MB)")
+    if not is_valid_image(data):
+        raise HTTPException(status_code=400, detail="Invalid image file")
+    ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "jpg"
+    path = f"{APP_NAME}/reviews/{uuid.uuid4()}.{ext}"
+    result = put_object(path, data, file.content_type)
+    await db.files.insert_one({
+        "id": str(uuid.uuid4()), "storage_path": result["path"],
+        "original_filename": file.filename, "content_type": file.content_type,
+        "size": result["size"], "is_deleted": False,
+        "created_at": datetime.now(timezone.utc).isoformat()})
+    return {"path": result["path"], "url": f"/api/files/{result['path']}"}
+
+
 class SettingsIn(BaseModel):
     address: str = ""
     hours: str = ""
@@ -277,6 +369,12 @@ class SettingsIn(BaseModel):
 
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 
+IMAGE_SIGNATURES = [b"\xff\xd8\xff", b"\x89PNG\r\n\x1a\n", b"GIF87a", b"GIF89a", b"RIFF"]
+
+
+def is_valid_image(data: bytes) -> bool:
+    return any(data.startswith(sig) for sig in IMAGE_SIGNATURES)
+
 
 @api_router.post("/upload", status_code=201)
 async def upload_image(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
@@ -285,6 +383,8 @@ async def upload_image(file: UploadFile = File(...), user: dict = Depends(get_cu
     data = await file.read()
     if len(data) > 8 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="File too large (max 8 MB)")
+    if not is_valid_image(data):
+        raise HTTPException(status_code=400, detail="Invalid image file")
     ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "jpg"
     path = f"{APP_NAME}/uploads/{user['id']}/{uuid.uuid4()}.{ext}"
     result = put_object(path, data, file.content_type)
@@ -358,6 +458,19 @@ SEED_PRODUCTS = [
 ]
 
 
+CATEGORY_COLORS = {
+    "Sofas": ["Walnut Brown", "Grey", "Beige"],
+    "Recliners": ["Black", "Brown", "Grey"],
+    "Beds": ["Walnut Brown", "Teak", "Honey"],
+    "Dining Tables": ["Walnut Brown", "Teak"],
+    "Wardrobes": ["Walnut Brown", "White", "Grey"],
+    "Dressing Tables": ["Walnut Brown", "White"],
+    "Chairs": ["White", "Red", "Blue", "Green"],
+    "Office Tables": ["Walnut Brown", "Black"],
+    "Computer Tables": ["Walnut Brown", "Black"],
+}
+
+
 @app.on_event("startup")
 async def startup():
     try:
@@ -388,8 +501,23 @@ async def startup():
         mrp_factors = [2.5, 1.67, 1.67, 2.5, 1.56, 1.67, 1.25, 1.43, 1.67, 2.0, 1.67, 2.0]
         await db.products.insert_many(
             [{**p, "mrp": int(round(p["price"] * mrp_factors[i % len(mrp_factors)] / 100) * 100 - 1),
+              "colors": CATEGORY_COLORS.get(p["category"], []), "sold_out": False,
               "id": str(uuid.uuid4()), "created_at": now} for i, p in enumerate(SEED_PRODUCTS)])
         logging.getLogger(__name__).info("Seeded %d products", len(SEED_PRODUCTS))
+
+    if await db.reviews.count_documents({}) == 0:
+        now = datetime.now(timezone.utc).isoformat()
+        sample_reviews = [
+            {"name": "Ramesh Kumar", "rating": 5, "photo_url": "",
+             "text": "Ordered a teak sofa on WhatsApp and it was delivered in 4 days. Solid wood, exactly like the photos. Very happy with the price too."},
+            {"name": "Lakshmi Devi", "rating": 5, "photo_url": "",
+             "text": "Bought the king size bed for my daughter's wedding. Beautiful finishing and the owner was very helpful on WhatsApp. Highly recommend Mahadevi Furnitures."},
+            {"name": "Suresh Reddy", "rating": 4, "photo_url": "",
+             "text": "Good quality dining set at a fair price. Delivery team assembled everything at home. Will buy again."},
+        ]
+        await db.reviews.insert_many(
+            [{**r, "id": str(uuid.uuid4()), "approved": True, "created_at": now} for r in sample_reviews])
+        logging.getLogger(__name__).info("Seeded sample reviews")
 
 
 app.include_router(api_router)

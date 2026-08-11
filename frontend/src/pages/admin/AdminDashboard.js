@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Package, ShoppingBag, LogOut, Plus, Pencil, Trash2, Store, Upload } from "lucide-react";
+import { Package, ShoppingBag, LogOut, Plus, Pencil, Trash2, Store, Upload, Star, MessageSquareQuote, Check, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { api, formatApiError, imgUrl } from "@/lib/api";
 import { inr } from "@/lib/format";
@@ -21,7 +21,15 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 
-const EMPTY_FORM = { name: "", category: "Sofas", price: "", image_url: "", description: "", featured: false };
+const EMPTY_FORM = { name: "", category: "Sofas", price: "", mrp: "", image_url: "", description: "", featured: false, colors: "", sold_out: false };
+
+const ORDER_STATUSES = ["pending", "confirmed", "delivered", "cancelled"];
+const STATUS_STYLES = {
+  pending: "bg-amber-100 text-amber-800",
+  confirmed: "bg-blue-100 text-blue-800",
+  delivered: "bg-green-100 text-green-800",
+  cancelled: "bg-red-100 text-red-700",
+};
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -29,6 +37,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState("products");
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -41,12 +50,21 @@ export default function AdminDashboard() {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
   }, []);
 
+  const fetchReviews = useCallback(() => {
+    api.get("/reviews/all").then((r) => setReviews(r.data)).catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (user) {
       fetchProducts();
+      fetchReviews();
       api.get("/orders").then((r) => setOrders(r.data)).catch(() => {});
+      api.get("/settings").then((r) => {
+        const { address = "", hours = "", map_embed_url = "", logo_url = "" } = r.data || {};
+        setSettingsForm({ address, hours, map_embed_url, logo_url });
+      }).catch(() => {});
     }
-  }, [user, fetchProducts]);
+  }, [user, fetchProducts, fetchReviews]);
 
   if (user === null) {
     return (
@@ -65,14 +83,19 @@ export default function AdminDashboard() {
 
   const openEdit = (p) => {
     setEditing(p);
-    setForm({ name: p.name, category: p.category, price: String(p.price), mrp: p.mrp ? String(p.mrp) : "", image_url: p.image_url, description: p.description, featured: p.featured });
+    setForm({ name: p.name, category: p.category, price: String(p.price), mrp: p.mrp ? String(p.mrp) : "", image_url: p.image_url, description: p.description, featured: p.featured, colors: (p.colors || []).join(", "), sold_out: !!p.sold_out });
     setDialogOpen(true);
   };
 
   const save = async (e) => {
     e.preventDefault();
     setSaving(true);
-    const payload = { ...form, price: Number(form.price) || 0, mrp: Number(form.mrp) || 0 };
+    const payload = {
+      ...form,
+      price: Number(form.price) || 0,
+      mrp: Number(form.mrp) || 0,
+      colors: String(form.colors || "").split(",").map((c) => c.trim()).filter(Boolean),
+    };
     try {
       if (editing) {
         await api.put(`/products/${editing.id}`, payload);
@@ -104,6 +127,37 @@ export default function AdminDashboard() {
   const doLogout = async () => {
     await logout();
     navigate("/admin/login");
+  };
+
+  const setOrderStatus = async (order, status) => {
+    try {
+      await api.put(`/orders/${order.id}/status`, { status });
+      setOrders((prev) => prev.map((o) => (o.id === order.id ? { ...o, status } : o)));
+      toast.success(`Order marked as ${status}.`);
+    } catch (err) {
+      toast.error(formatApiError(err));
+    }
+  };
+
+  const setReviewApproval = async (review, approved) => {
+    try {
+      await api.put(`/reviews/${review.id}/approve`, { approved });
+      setReviews((prev) => prev.map((r) => (r.id === review.id ? { ...r, approved } : r)));
+      toast.success(approved ? "Review approved — now live on the website." : "Review hidden from the website.");
+    } catch (err) {
+      toast.error(formatApiError(err));
+    }
+  };
+
+  const deleteReview = async (review) => {
+    if (!window.confirm(`Delete review by "${review.name}"? This cannot be undone.`)) return;
+    try {
+      await api.delete(`/reviews/${review.id}`);
+      setReviews((prev) => prev.filter((r) => r.id !== review.id));
+      toast.success("Review deleted.");
+    } catch (err) {
+      toast.error(formatApiError(err));
+    }
   };
 
   const uploadImage = async (file, onDone) => {
@@ -179,6 +233,7 @@ export default function AdminDashboard() {
         <nav className="mt-4 flex flex-col">
           {tabBtn("products", "Products", Package)}
           {tabBtn("orders", "Orders", ShoppingBag)}
+          {tabBtn("reviews", "Reviews", MessageSquareQuote)}
           {tabBtn("settings", "Shop Settings", Store)}
         </nav>
         <button
@@ -194,13 +249,15 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between border-b border-[#DCD6CD] bg-white px-6 py-5 md:px-10">
           <div>
             <h1 className="font-display text-2xl font-medium tracking-tight text-[#1A1817]">
-              {tab === "products" ? "Products & Prices" : tab === "orders" ? "Customer Orders" : "Shop Settings"}
+              {tab === "products" ? "Products & Prices" : tab === "orders" ? "Customer Orders" : tab === "reviews" ? "Customer Reviews" : "Shop Settings"}
             </h1>
             <p className="mt-1 text-xs font-light text-[#5C564F]">
               {tab === "products"
                 ? "Edit a price, MRP or product here — it updates on the website instantly."
                 : tab === "orders"
-                ? "Orders customers sent to your WhatsApp."
+                ? "Orders customers sent to your WhatsApp — track them from pending to delivered."
+                : tab === "reviews"
+                ? "Approve customer reviews to show them on the website, or delete unwanted ones."
                 : "Your logo, showroom address, hours and map — shown across the website."}
             </p>
           </div>
@@ -218,6 +275,7 @@ export default function AdminDashboard() {
         <div className="flex gap-2 border-b border-[#DCD6CD] bg-[#1A1817] px-2 py-2 md:hidden">
           {tabBtn("products", "Products", Package, "-mobile")}
           {tabBtn("orders", "Orders", ShoppingBag, "-mobile")}
+          {tabBtn("reviews", "Reviews", MessageSquareQuote, "-mobile")}
           {tabBtn("settings", "Settings", Store, "-mobile")}
           <button data-testid="admin-logout-button-mobile" onClick={doLogout} className="flex items-center gap-2 px-4 text-xs uppercase tracking-[0.2em] text-[#EAE3D6]/60">
             <LogOut className="h-4 w-4" />
@@ -243,7 +301,12 @@ export default function AdminDashboard() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <img src={p.image_url} alt={p.name} className="h-12 w-12 bg-[#EAE3D6] object-cover" />
-                          <span className="text-sm font-medium text-[#1A1817]">{p.name}</span>
+                          <div>
+                            <span className="text-sm font-medium text-[#1A1817]">{p.name}</span>
+                            {p.sold_out && (
+                              <span className="ml-2 bg-[#1A1817] px-2 py-0.5 text-[9px] uppercase tracking-[0.15em] text-[#FAF7F2]" data-testid={`admin-sold-out-${p.id}`}>Sold Out</span>
+                            )}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-sm font-light text-[#5C564F]">{p.category}</TableCell>
@@ -298,19 +361,127 @@ export default function AdminDashboard() {
                       <TableHead className="text-xs uppercase tracking-[0.18em]">Product</TableHead>
                       <TableHead className="text-xs uppercase tracking-[0.18em]">Qty</TableHead>
                       <TableHead className="text-xs uppercase tracking-[0.18em]">Address</TableHead>
+                      <TableHead className="text-xs uppercase tracking-[0.18em]">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {orders.map((o) => (
+                    {orders.map((o) => {
+                      const status = ORDER_STATUSES.includes(o.status) ? o.status : "pending";
+                      return (
                       <TableRow key={o.id} className="border-[#DCD6CD]" data-testid={`order-row-${o.id}`}>
                         <TableCell className="text-sm font-light text-[#5C564F]">
                           {new Date(o.created_at).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
                         </TableCell>
                         <TableCell className="text-sm font-medium text-[#1A1817]">{o.name}</TableCell>
                         <TableCell className="text-sm font-light text-[#5C564F]">{o.phone}</TableCell>
-                        <TableCell className="text-sm font-light text-[#1A1817]">{o.product_name}</TableCell>
+                        <TableCell className="text-sm font-light text-[#1A1817]">
+                          {o.product_name}
+                          {o.color && <span className="block text-xs text-[#8C5A35]">Colour: {o.color}</span>}
+                        </TableCell>
                         <TableCell className="text-sm font-light text-[#5C564F]">{o.quantity}</TableCell>
                         <TableCell className="max-w-56 truncate text-sm font-light text-[#5C564F]">{o.address || "—"}</TableCell>
+                        <TableCell>
+                          <Select value={status} onValueChange={(v) => setOrderStatus(o, v)}>
+                            <SelectTrigger
+                              data-testid={`order-status-select-${o.id}`}
+                              className={`h-8 w-32 rounded-none border-0 text-[10px] font-medium uppercase tracking-[0.12em] ${STATUS_STYLES[status]}`}
+                            >
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-none border-[#DCD6CD]">
+                              {ORDER_STATUSES.map((s) => (
+                                <SelectItem key={s} value={s} data-testid={`order-status-option-${s}`} className="text-xs uppercase tracking-[0.12em]">
+                                  {s}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                      </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
+          )}
+
+          {tab === "reviews" && (
+            <div className="border border-[#DCD6CD] bg-white" data-testid="reviews-table">
+              {reviews.length === 0 ? (
+                <p className="px-6 py-16 text-center text-xs uppercase tracking-[0.25em] text-[#5C564F]" data-testid="reviews-empty-admin">
+                  No reviews yet — customers can write them from the home page
+                </p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-[#DCD6CD]">
+                      <TableHead className="text-xs uppercase tracking-[0.18em]">Customer</TableHead>
+                      <TableHead className="text-xs uppercase tracking-[0.18em]">Rating</TableHead>
+                      <TableHead className="text-xs uppercase tracking-[0.18em]">Review</TableHead>
+                      <TableHead className="text-xs uppercase tracking-[0.18em]">Status</TableHead>
+                      <TableHead className="text-right text-xs uppercase tracking-[0.18em]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {reviews.map((r) => (
+                      <TableRow key={r.id} className="border-[#DCD6CD]" data-testid={`review-row-${r.id}`}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            {r.photo_url && (
+                              <img src={imgUrl(r.photo_url)} alt={`By ${r.name}`} className="h-12 w-12 bg-[#EAE3D6] object-cover" />
+                            )}
+                            <span className="text-sm font-medium text-[#1A1817]">{r.name}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <Star key={n} className={`h-3.5 w-3.5 ${n <= r.rating ? "fill-[#C9A227] text-[#C9A227]" : "text-[#DCD6CD]"}`} />
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell className="max-w-72 text-sm font-light text-[#5C564F]">
+                          <span className="line-clamp-2">{r.text}</span>
+                        </TableCell>
+                        <TableCell>
+                          {r.approved ? (
+                            <span className="bg-green-100 px-2 py-1 text-[10px] uppercase tracking-[0.15em] text-green-800" data-testid={`review-status-${r.id}`}>Live</span>
+                          ) : (
+                            <span className="bg-amber-100 px-2 py-1 text-[10px] uppercase tracking-[0.15em] text-amber-800" data-testid={`review-status-${r.id}`}>Pending</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {r.approved ? (
+                            <button
+                              data-testid={`hide-review-${r.id}`}
+                              aria-label={`Hide review by ${r.name}`}
+                              onClick={() => setReviewApproval(r, false)}
+                              className="mr-2 inline-flex h-9 w-9 items-center justify-center border border-[#DCD6CD] text-[#5C564F] transition-colors duration-300 hover:border-amber-500 hover:text-amber-600"
+                              title="Hide from website"
+                            >
+                              <EyeOff className="h-4 w-4" />
+                            </button>
+                          ) : (
+                            <button
+                              data-testid={`approve-review-${r.id}`}
+                              aria-label={`Approve review by ${r.name}`}
+                              onClick={() => setReviewApproval(r, true)}
+                              className="mr-2 inline-flex h-9 w-9 items-center justify-center border border-[#DCD6CD] text-[#5C564F] transition-colors duration-300 hover:border-green-500 hover:text-green-600"
+                              title="Approve — show on website"
+                            >
+                              <Check className="h-4 w-4" />
+                            </button>
+                          )}
+                          <button
+                            data-testid={`delete-review-${r.id}`}
+                            aria-label={`Delete review by ${r.name}`}
+                            onClick={() => deleteReview(r)}
+                            className="inline-flex h-9 w-9 items-center justify-center border border-[#DCD6CD] text-[#5C564F] transition-colors duration-300 hover:border-red-400 hover:text-red-500"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -396,7 +567,7 @@ export default function AdminDashboard() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent data-testid="product-form-dialog" className="max-h-[90vh] overflow-y-auto rounded-none border-[#DCD6CD] bg-[#FAF7F2] sm:max-w-lg">
+        <DialogContent data-testid="product-form-dialog" aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto rounded-none border-[#DCD6CD] bg-[#FAF7F2] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-display text-2xl tracking-tight text-[#1A1817]">
               {editing ? "Edit Product" : "Add New Product"}
@@ -484,12 +655,34 @@ export default function AdminDashboard() {
                 className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
               />
             </div>
+            <div>
+              <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Available Colours (comma separated)</Label>
+              <Input
+                data-testid="product-form-colors"
+                value={form.colors}
+                onChange={(e) => setForm({ ...form, colors: e.target.value })}
+                placeholder="e.g. Walnut Brown, Grey, Beige"
+                className="mt-2 rounded-none border-[#DCD6CD] bg-white focus-visible:ring-[#8C5A35]/50"
+              />
+              <p className="mt-1.5 text-[11px] font-light text-[#5C564F]">Customers will pick one of these colours while ordering. Leave empty if not applicable.</p>
+            </div>
             <div className="flex items-center justify-between border border-[#DCD6CD] bg-white px-4 py-3">
               <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Show on Homepage (Featured)</Label>
               <Switch
                 data-testid="product-form-featured"
                 checked={form.featured}
                 onCheckedChange={(v) => setForm({ ...form, featured: v })}
+              />
+            </div>
+            <div className="flex items-center justify-between border border-[#DCD6CD] bg-white px-4 py-3">
+              <div>
+                <Label className="text-xs uppercase tracking-[0.2em] text-[#5C564F]">Mark as Sold Out</Label>
+                <p className="mt-0.5 text-[11px] font-light text-[#5C564F]">Customers will see a Sold Out badge and can't order it.</p>
+              </div>
+              <Switch
+                data-testid="product-form-sold-out"
+                checked={form.sold_out}
+                onCheckedChange={(v) => setForm({ ...form, sold_out: v })}
               />
             </div>
             <Button

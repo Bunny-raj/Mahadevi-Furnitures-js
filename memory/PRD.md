@@ -6,36 +6,44 @@
 ## User Choices (confirmed)
 - WhatsApp for orders: +91 9949700111 (wa.me/919949700111)
 - Admin auth: email + password (JWT, httpOnly cookies)
-- Logo: text-based "MAHADEVI FURNITURES" (no image file provided)
 - Catalogue: sofas, beds, wardrobes, dining tables, dressing tables, plastic chairs, computer/laptop/office tables, recliners, home needs
 - Design: modern & minimal + warm & premium, award-level motion (framer-motion + lenis)
-
-## User Personas
-- Customer: browses catalogue, filters by category, orders via WhatsApp without signup
-- Shop owner (admin): logs in, edits prices/products, adds/deletes products, sees orders
+- Reviews: customers submit from website, admin approves before they appear (2026-06 choice)
+- Colours: admin defines per-product colours; customer picks one in order dialog → included in WhatsApp message
+- Order statuses: pending / confirmed / delivered / cancelled
+- Reviews shown on home page "Happy Customers" section
 
 ## Architecture
-- FastAPI backend (/api prefix, port 8001): auth (JWT cookies, bcrypt, brute-force lockout), products CRUD (public read, admin write), orders (public create → wa.me link, admin list), startup seeding (admin + 12 products)
-- MongoDB via MONGO_URL/DB_NAME: users, products, orders, login_attempts
-- React frontend (port 3000): Home (kinetic hero, marquee, manifesto, featured), Catalogue (filters + search), Product Detail (sticky gallery + WhatsApp order dialog), Admin Login, Admin Dashboard (products table + orders table)
-- Design: Playfair Display + Outfit, warm sand/charcoal/mahogany palette, lenis smooth scroll, framer-motion reveals
+- FastAPI backend (/api prefix, port 8001): auth (JWT cookies, bcrypt, email-keyed brute-force lockout), products CRUD (colors[], sold_out), orders (create → wa.me link with colour; admin list + status update), reviews (public submit + upload, admin moderate), settings, object storage uploads (magic-byte validated)
+- MongoDB: users, products, orders, reviews, settings, files, login_attempts
+- React frontend: Home (hero, marquee, featured, Happy Customers reviews, showroom), Catalogue, Product Detail (colour swatches, sold-out state, order dialog), Admin Dashboard (Products / Orders / Reviews / Shop Settings tabs)
 
 ## Implemented (2026-08-09)
-- Full public site with hero animation, editorial marquee, manifesto chapters, featured products
-- Catalogue with 9 category filters + live search, 12 seeded products with real photography
-- WhatsApp order flow: dialog (name/phone/qty/address) → order saved in DB → wa.me deep link opens with prefilled message
-- Admin: JWT login, product add/edit/delete (price rename live instantly), featured toggle, orders list, logout
-- Floating WhatsApp button, glass navbar, dark footer with phone/WhatsApp links
+- Full public site, catalogue with filters/search, 12 seeded products
+- WhatsApp order flow (dialog → DB → wa.me deep link)
+- Admin: JWT login, product CRUD, featured toggle, orders list
 
-## Implemented (2026-08-11)
-- Discounts up to 60%: per-product MRP field in admin; storefront shows "% Off" badges, strikethrough MRP and "You save ₹X"; marquee includes UP TO 60% OFF; existing products migrated with MRPs (20–60% off)
-- Photo uploads from phone/desktop: admin product form has Upload button (Emergent object storage via /api/upload, served at /api/files/*); admin-only, 8MB image limit
-- Logo upload: admin Shop Settings tab → logo shows in navbar + footer (text wordmark fallback)
-- Showroom section on home page: address, business hours, Google Maps embed — all editable in admin Shop Settings; address/hours also appear in footer
+## Implemented (2026-08-11 a)
+- Discounts (MRP vs price, % off badges), photo uploads (Emergent object storage), logo upload, showroom section (address/hours/map in Shop Settings)
+
+## Implemented (2026-08-11 b — this session)
+- Customer Reviews: public submit (name, star rating, text, optional photo via public /api/reviews/upload), admin Reviews tab (approve/hide/delete), home page "Happy Customers" section shows approved only; 3 sample reviews seeded
+- Order Status Tracking: admin Orders tab status dropdown (pending/confirmed/delivered/cancelled), colour shown per order; new orders default to pending
+- Sold-Out Badges: admin product form "Mark as Sold Out" switch → dark badge + grayscale on cards, sold-out notice + WhatsApp enquiry link replaces order button on detail page
+- Colour Palette: admin "Available Colours" comma-separated input; swatch pills on product detail + order dialog (required when product has colours); colour included in saved order + WhatsApp message; all 12 products seeded with category colours
+- Fixes from testing: settings form now hydrates from GET /api/settings (data-loss bug), lockout keyed on email (proxy IP unreliable), review approve uses Pydantic bool, image uploads validate magic bytes, product form dialog a11y
+
+## Key endpoints (new)
+- POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
+- PUT /api/orders/{id}/status (admin)
+
+## Testing
+- iteration_1 + iteration_2 test reports in /app/test_reports/; final backend 94→100% after review-upload fix (self-verified via curl: spoofed image 400, real image 201)
+- Test suite: /app/backend/tests/backend_test.py
 
 ## Backlog
-- P0: none
 - P1: Owner fills real showroom address, hours, map link and uploads real logo in Shop Settings
-- P2: Mark orders as done/pending in admin
-- P2: Product stock status (available/sold out)
+- P1: Editable marquee/offer text from Shop Settings
 - P2: Delete uploaded files (soft-delete exists in DB)
+- P2: Split AdminDashboard.js (~730 lines) into per-tab components
+- P2: Move WhatsApp number to env/settings for frontend (currently hardcoded in App.js/ProductDetail.js)

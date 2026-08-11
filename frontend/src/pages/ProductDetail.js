@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, MessageCircle, ShieldCheck, Truck, BadgeIndianRupee } from "lucide-react";
 import { api, imgUrl } from "@/lib/api";
-import { inr, discountPct } from "@/lib/format";
+import { inr, discountPct, colorHex, colorSlug } from "@/lib/format";
 import Reveal from "@/components/Reveal";
 import ProductCard from "@/components/ProductCard";
 import OrderDialog from "@/components/OrderDialog";
@@ -13,10 +13,12 @@ export default function ProductDetail() {
   const [related, setRelated] = useState([]);
   const [notFound, setNotFound] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("");
 
   useEffect(() => {
     setProduct(null);
     setNotFound(false);
+    setSelectedColor("");
     api
       .get(`/products/${id}`)
       .then((r) => {
@@ -69,13 +71,22 @@ export default function ProductDetail() {
               data-testid="product-detail-image"
               className="h-full w-full object-cover"
             />
-            {discountPct(product) > 0 && (
+            {product.sold_out ? (
               <span
-                data-testid="product-discount-badge"
-                className="absolute left-5 top-5 bg-[#8C5A35] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[#FAF7F2]"
+                data-testid="product-sold-out-badge"
+                className="absolute left-5 top-5 bg-[#1A1817] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[#FAF7F2]"
               >
-                {discountPct(product)}% Off
+                Sold Out
               </span>
+            ) : (
+              discountPct(product) > 0 && (
+                <span
+                  data-testid="product-discount-badge"
+                  className="absolute left-5 top-5 bg-[#8C5A35] px-4 py-2 text-xs uppercase tracking-[0.2em] text-[#FAF7F2]"
+                >
+                  {discountPct(product)}% Off
+                </span>
+              )
             )}
           </div>
         </Reveal>
@@ -106,14 +117,58 @@ export default function ProductDetail() {
             {product.description}
           </p>
 
-          <button
-            data-testid="whatsapp-order-btn"
-            onClick={() => setOrderOpen(true)}
-            className="mt-10 flex w-full max-w-md items-center justify-center gap-3 bg-[#25D366] px-8 py-5 text-xs uppercase tracking-[0.25em] text-white transition-colors duration-300 hover:bg-[#1eb85a]"
-          >
-            <MessageCircle className="h-5 w-5" />
-            Order Now on WhatsApp
-          </button>
+          {product.colors?.length > 0 && (
+            <div className="mt-8" data-testid="product-color-picker">
+              <p className="text-xs uppercase tracking-[0.25em] text-[#5C564F]">
+                Available Colours{selectedColor && <span className="ml-2 normal-case tracking-normal text-[#8C5A35]">— {selectedColor}</span>}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {product.colors.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    data-testid={`color-option-${colorSlug(c)}`}
+                    onClick={() => setSelectedColor(c)}
+                    className={`flex items-center gap-2 border px-4 py-2.5 text-xs transition-colors duration-200 ${
+                      selectedColor === c
+                        ? "border-[#8C5A35] bg-[#8C5A35]/10 text-[#8C5A35]"
+                        : "border-[#DCD6CD] bg-white text-[#5C564F] hover:border-[#8C5A35]"
+                    }`}
+                  >
+                    <span className="h-4 w-4 rounded-full border border-black/10" style={{ backgroundColor: colorHex(c) }} />
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {product.sold_out ? (
+            <div
+              data-testid="sold-out-notice"
+              className="mt-10 flex w-full max-w-md flex-col items-center gap-2 border border-[#DCD6CD] bg-[#EAE3D6] px-8 py-5 text-center"
+            >
+              <span className="text-xs uppercase tracking-[0.25em] text-[#1A1817]">Currently Sold Out</span>
+              <a
+                href={`https://wa.me/919949700111?text=${encodeURIComponent(`Hello MAHADEVI FURNITURES! Is "${product.name}" coming back in stock? Please let me know.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="sold-out-whatsapp-link"
+                className="text-xs font-light text-[#8C5A35] underline underline-offset-4"
+              >
+                WhatsApp us to ask when it's back
+              </a>
+            </div>
+          ) : (
+            <button
+              data-testid="whatsapp-order-btn"
+              onClick={() => setOrderOpen(true)}
+              className="mt-10 flex w-full max-w-md items-center justify-center gap-3 bg-[#25D366] px-8 py-5 text-xs uppercase tracking-[0.25em] text-white transition-colors duration-300 hover:bg-[#1eb85a]"
+            >
+              <MessageCircle className="h-5 w-5" />
+              Order Now on WhatsApp
+            </button>
+          )}
 
           <div className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-[#DCD6CD] pt-8">
             {[
@@ -147,7 +202,7 @@ export default function ProductDetail() {
         </section>
       )}
 
-      <OrderDialog product={product} open={orderOpen} onOpenChange={setOrderOpen} />
+      <OrderDialog product={product} open={orderOpen} onOpenChange={setOrderOpen} initialColor={selectedColor} />
     </div>
   );
 }
