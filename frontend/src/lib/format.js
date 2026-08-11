@@ -24,7 +24,10 @@ const COLOR_MAP = {
   "purple": "#6D5AA0", "silver": "#BFBFBF", "gold": "#C9A227",
   "teal": "#2E7F7F", "charcoal grey": "#3E3A37", "pearl white": "#F2EEE6",
   "dark beige": "#B8A07E", "rust brown": "#8B4A2F", "bright red & black": "#A63A3A",
-  "olive": "#6B6B3A",
+  "olive": "#6B6B3A", "light green": "#9CBF8E", "aqua": "#7FCACC", "mauve": "#9E8B94",
+  "biscuit": "#D9B98C", "milky white": "#F5F3EC", "pear wood": "#DDAE6B",
+  "weather brown": "#4E342E", "marble beige": "#E8DFC9", "iron black": "#232323",
+  "silver grey": "#B0B0B0", "olive grey": "#7A7A66", "metallic dark": "#4A4A4A",
 };
 
 export const colorHex = (name) => COLOR_MAP[String(name || "").trim().toLowerCase()] || "#B8AFA3";

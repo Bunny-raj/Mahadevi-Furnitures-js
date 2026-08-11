@@ -58,6 +58,9 @@
 - 17 Nilkamal plastic chairs added with real images cropped from owner's screenshots, in row order; duplicate colour variants merged into single products with colour palettes: Luxe (Teal/Black/Bright Red & Black), Aura (Gold/Pearl White), Grace (Pearl White/Gold); "% OFF"/heart badges trimmed from images; new colour hexes (teal, charcoal grey, pearl white, dark beige, rust brown) added to format.js COLOR_MAP
 - Full list: Ortho Comfort, Novella 10, Novella 09, Club, Luxe, Arena Woven, Arena Cushioned, Ace, Bliss, Glam, Elevate, Aura, Grace, Startrek, Captain, Paradise, Octo Junior Kids
 
+## Implemented (2026-08-11 i)
+- Second Nilkamal chair batch (14 new + 2 merges → 33 total plastic chairs): CHR2146, Eeezy Go, Lounger, Exotica, CHR4025, CHR2061 (merged Pear Wood variant), CHR4002, CHR2005, CHR2231, CHR2101, Enamora, Novella 08 (4 colour variants merged: Biscuit/Red/Milky White/Orange/Grey), Captain Arm Chair, Captain Cushion Metallic Dark; Novella 09 colours extended (Orange/Biscuit/Red/Light Green); 12 new colour hexes in COLOR_MAP; all images cropped from screenshots, badges trimmed, verified serving 200
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)
