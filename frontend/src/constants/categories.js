@@ -7,6 +7,7 @@ export const CATEGORIES = [
   "Tea Tables",
   "Dressing Tables",
   "Plastic Chairs",
+  "Office Chairs",
   "Computer Tables",
   "Office Tables",
   "Recliners",

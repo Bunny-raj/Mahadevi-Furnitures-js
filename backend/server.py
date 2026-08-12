@@ -508,6 +508,7 @@ CATEGORY_COLORS = {
     "Wardrobes": ["Walnut Brown", "White", "Grey"],
     "Dressing Tables": ["Walnut Brown", "White"],
     "Plastic Chairs": ["White", "Red", "Blue", "Green"],
+    "Office Chairs": ["Black", "Grey"],
     "Office Tables": ["Walnut Brown", "Black"],
     "Computer Tables": ["Walnut Brown", "Black"],
 }

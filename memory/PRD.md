@@ -72,6 +72,7 @@
 
 ## Implemented (2026-08-12)
 - Admin Products page: category filter dropdown (All + all categories) + product name search box + live product count; "Add Product" pre-selects the currently filtered category
+- New "Office Chairs" category with 3 starter products (Executive High-Back ₹8,499, Ergonomic Mesh ₹6,499, Visitor Cantilever ₹3,999) with AI-generated images — owner can edit prices/photos in admin
 
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
