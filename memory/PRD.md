@@ -70,6 +70,9 @@
 ## Implemented (2026-08-11 k)
 - Product detail image now object-contain (full chair visible, nothing cropped); "3-Year Warranty" badge chip shown on Plastic Chairs and any product whose description mentions warranty
 
+## Implemented (2026-08-12)
+- Admin Products page: category filter dropdown (All + all categories) + product name search box + live product count; "Add Product" pre-selects the currently filtered category
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)

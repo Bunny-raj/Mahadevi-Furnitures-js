@@ -36,6 +36,8 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [tab, setTab] = useState("products");
   const [products, setProducts] = useState([]);
+  const [productFilter, setProductFilter] = useState("All");
+  const [productSearch, setProductSearch] = useState("");
   const [orders, setOrders] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -80,7 +82,7 @@ export default function AdminDashboard() {
 
   const openAdd = () => {
     setEditing(null);
-    setForm(EMPTY_FORM);
+    setForm({ ...EMPTY_FORM, category: productFilter !== "All" ? productFilter : EMPTY_FORM.category });
     setDialogOpen(true);
   };
 
@@ -324,6 +326,34 @@ export default function AdminDashboard() {
 
         <div className="p-6 md:p-10">
           {tab === "products" && (
+            <>
+            <div className="mb-5 flex flex-wrap items-center gap-3" data-testid="products-toolbar">
+              <Select value={productFilter} onValueChange={setProductFilter}>
+                <SelectTrigger
+                  data-testid="admin-category-filter"
+                  className="h-10 w-48 rounded-none border-[#DCD6CD] bg-white text-xs uppercase tracking-[0.15em]"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="rounded-none border-[#DCD6CD]">
+                  {["All", ...CATEGORIES].map((c) => (
+                    <SelectItem key={c} value={c} data-testid={`admin-filter-${c.toLowerCase().replace(/\s+/g, "-")}`} className="text-xs uppercase tracking-[0.12em]">
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                data-testid="admin-product-search"
+                value={productSearch}
+                onChange={(e) => setProductSearch(e.target.value)}
+                placeholder="Search product name…"
+                className="h-10 w-64 rounded-none border-[#DCD6CD] bg-white text-sm focus-visible:ring-[#8C5A35]/50"
+              />
+              <span className="text-xs font-light text-[#5C564F]" data-testid="admin-product-count">
+                {products.filter((p) => (productFilter === "All" || p.category === productFilter) && p.name.toLowerCase().includes(productSearch.toLowerCase())).length} products
+              </span>
+            </div>
             <div className="border border-[#DCD6CD] bg-white" data-testid="products-table">
               <Table>
                 <TableHeader>
@@ -336,7 +366,9 @@ export default function AdminDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {products.map((p) => (
+                  {products
+                    .filter((p) => (productFilter === "All" || p.category === productFilter) && p.name.toLowerCase().includes(productSearch.toLowerCase()))
+                    .map((p) => (
                     <TableRow key={p.id} className="border-[#DCD6CD]" data-testid={`admin-product-row-${p.id}`}>
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -383,6 +415,7 @@ export default function AdminDashboard() {
                 </TableBody>
               </Table>
             </div>
+            </>
           )}
 
           {tab === "orders" && (
