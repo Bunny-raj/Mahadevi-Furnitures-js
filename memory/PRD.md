@@ -74,6 +74,9 @@
 - Admin Products page: category filter dropdown (All + all categories) + product name search box + live product count; "Add Product" pre-selects the currently filtered category
 - New "Office Chairs" category with 3 starter products (Executive High-Back ₹8,499, Ergonomic Mesh ₹6,499, Visitor Cantilever ₹3,999) with AI-generated images — owner can edit prices/photos in admin
 
+## Implemented (2026-08-12 b)
+- Offline Node.js version of the full website in /app/nodejs-site/: backend/ (Express server.js, JSON-file storage, same API incl. WhatsApp orders + admin login/price edit), frontend/ (vanilla HTML/CSS/JS: index, product page with colour swap + magnifier + mattress options, admin.html), images/ (all 76 photos downloaded from storage), data/ (66 products, reviews, settings exported from live DB). Run: cd backend && npm install && npm start → localhost:3000. Admin password Mahadevi@2026. Tested end-to-end on port 4600.
+
 ## Key endpoints (new)
 - POST /api/reviews (public), GET /api/reviews (approved), GET /api/reviews/all (admin), PUT /api/reviews/{id}/approve, DELETE /api/reviews/{id}, POST /api/reviews/upload (public, 5MB)
 - PUT /api/orders/{id}/status (admin)

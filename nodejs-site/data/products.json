@@ -1,0 +1,1114 @@
+[
+ {
+  "name": "Imperial Teak 3-Seater Sofa",
+  "category": "Sofas",
+  "price": 24999.0,
+  "featured": true,
+  "description": "Solid teak frame with plush high-density cushions. A statement piece for your living room, built to last generations.",
+  "image_url": "/images/imperial-teak-3-seater-sofa.jpg",
+  "id": "689fd1b7-d5a4-48b4-b757-770594d9e092",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 62499.0,
+  "colors": [
+   "Walnut Brown",
+   "Grey",
+   "Beige"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Chesterfield 2-Seater Sofa",
+  "category": "Sofas",
+  "price": 19499,
+  "featured": true,
+  "description": "Classic chesterfield silhouette in premium upholstery. Deep seating comfort with a timeless profile.",
+  "image_url": "/images/chesterfield-2-seater-sofa.jpg",
+  "id": "3e3b0183-87bd-4e75-bfb3-a0238d9bed6f",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 32599,
+  "colors": [
+   "Walnut Brown",
+   "Grey",
+   "Beige"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Cloud Comfort Recliner",
+  "category": "Recliners",
+  "price": 18499,
+  "featured": true,
+  "description": "Smooth reclining mechanism with padded armrests. Your favourite corner of the house, guaranteed.",
+  "image_url": "/images/cloud-comfort-recliner.jpg",
+  "id": "41464fb4-36d1-4ee4-9b1a-5f00a67b782b",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 30899,
+  "colors": [
+   "Black",
+   "Brown",
+   "Grey"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Royal Solid Wood King Bed",
+  "category": "Beds",
+  "price": 32999,
+  "featured": true,
+  "description": "Seasoned hardwood king-size bed with a hand-finished headboard. Sleeps like royalty, priced fairly.",
+  "image_url": "/images/royal-solid-wood-king-bed.jpg",
+  "id": "a6314c4e-6790-4786-9691-c46f7636d1ad",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 82499,
+  "colors": [
+   "Walnut Brown",
+   "Teak",
+   "Honey"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Urban Queen Bed with Storage",
+  "category": "Beds",
+  "price": 27499,
+  "featured": false,
+  "description": "Queen-size bed with hydraulic under-bed storage. Clean lines, warm walnut finish.",
+  "image_url": "/images/urban-queen-bed-with-storage.jpg",
+  "id": "ee8c236d-ba35-431e-90df-ee0049ec2824",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 42899,
+  "colors": [
+   "Walnut Brown",
+   "Teak",
+   "Honey"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Heritage 6-Seater Dining Set",
+  "category": "Dining Tables",
+  "price": 28499,
+  "featured": true,
+  "description": "Six-seater dining set in solid wood with cushioned chairs. Where family dinners become traditions.",
+  "image_url": "/images/heritage-6-seater-dining-set.jpg",
+  "id": "a33c5672-6abe-457e-bbc3-645ec53e7eb1",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 47599,
+  "colors": [
+   "Walnut Brown",
+   "Teak"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Walnut 4-Seater Dining Table",
+  "category": "Dining Tables",
+  "price": 16999,
+  "featured": false,
+  "description": "Compact four-seater with a rich walnut top. Perfect for modern apartments.",
+  "image_url": "/images/walnut-4-seater-dining-table.jpg",
+  "id": "db1c0c93-93e0-4945-977f-346e255ab887",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 21199,
+  "colors": [
+   "Walnut Brown",
+   "Teak"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Grand 3-Door Wardrobe",
+  "category": "Wardrobes",
+  "price": 21999,
+  "featured": false,
+  "description": "Three-door wardrobe with mirror, hanging space and lockable drawer. Ample storage, elegant facade.",
+  "image_url": "/images/grand-3-door-wardrobe.jpg",
+  "id": "15847e74-f6ab-4d89-ad7d-3c84e5094bde",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 31499,
+  "colors": [
+   "Walnut Brown",
+   "White",
+   "Grey"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Elegance Dressing Table",
+  "category": "Dressing Tables",
+  "price": 9999,
+  "featured": false,
+  "description": "Dressing table with full-length mirror and smooth-glide drawers. A quiet luxury for your bedroom.",
+  "image_url": "/images/elegance-dressing-table.jpg",
+  "id": "dbab1146-e3bd-4896-97a0-92807bc68e7a",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 16699,
+  "colors": [
+   "Walnut Brown",
+   "White"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Premium Plastic Chairs (Set of 4)",
+  "category": "Plastic Chairs",
+  "price": 1999,
+  "featured": false,
+  "description": "Heavy-duty, weather-resistant chairs in a set of four. Light to move, strong to sit.",
+  "image_url": "/images/premium-plastic-chairs-set-of-4.jpg",
+  "id": "c93024a4-ec1b-4961-8c13-002c0264b385",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 3999,
+  "colors": [
+   "White",
+   "Red",
+   "Blue",
+   "Green"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "ErgoWork Office Table",
+  "category": "Office Tables",
+  "price": 7499,
+  "featured": false,
+  "description": "Spacious office table with cable management and a scratch-resistant top. Built for long workdays.",
+  "image_url": "/images/ergowork-office-table.jpg",
+  "id": "760e53d9-a4b3-435b-beb6-343cd472ed35",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 12499,
+  "colors": [
+   "Walnut Brown",
+   "Black"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Compact Laptop & Computer Table",
+  "category": "Computer Tables",
+  "price": 2499,
+  "featured": false,
+  "description": "Space-saving computer table with keyboard tray and shelf. Ideal for study and work-from-home setups.",
+  "image_url": "/images/compact-laptop-computer-table.jpg",
+  "id": "7f59712f-572b-45a8-a4a6-63a789387af7",
+  "created_at": "2026-08-09T11:55:58.589902+00:00",
+  "mrp": 4999,
+  "colors": [
+   "Walnut Brown",
+   "Black"
+  ],
+  "sold_out": false,
+  "color_images": {}
+ },
+ {
+  "name": "Rainbow Stackable Plastic Chairs (Set of 4)",
+  "category": "Plastic Chairs",
+  "price": 2499,
+  "mrp": 3999,
+  "featured": false,
+  "colors": [
+   "White",
+   "Green",
+   "Pink",
+   "Blue"
+  ],
+  "sold_out": false,
+  "description": "Glossy stackable chairs in cheerful pastel shades. Perfect for dining, functions and everyday extra seating.",
+  "image_url": "/images/rainbow-stackable-plastic-chairs-set-of-4.jpg",
+  "id": "185d7d29-5b4e-41e7-8d8a-ffcaad4e0e7d",
+  "created_at": "2026-08-11T07:47:39.195484+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Classic Teak Tea Table",
+  "category": "Tea Tables",
+  "price": 5999,
+  "mrp": 8999,
+  "featured": false,
+  "colors": [
+   "Teak",
+   "Walnut Brown"
+  ],
+  "sold_out": false,
+  "description": "Solid teak tea table with a slatted lower shelf. The perfect companion for evening chai and conversations.",
+  "image_url": "/images/classic-teak-tea-table.jpg",
+  "id": "0379ebfe-43d9-405e-8889-8cd318c8317c",
+  "created_at": "2026-08-11T07:47:39.195484+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Glass-Top Tea Table",
+  "category": "Tea Tables",
+  "price": 4499,
+  "mrp": 6999,
+  "featured": false,
+  "colors": [
+   "Walnut Brown"
+  ],
+  "sold_out": false,
+  "description": "Tempered glass top on solid wood legs — easy to clean, elegant in any living room.",
+  "image_url": "/images/glass-top-tea-table.jpg",
+  "id": "558ef953-87bd-4cf6-9935-d16a3e60219e",
+  "created_at": "2026-08-11T07:47:39.195484+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell ActivMatt Mattress (Elevate)",
+  "category": "Mattresses",
+  "price": 12439,
+  "mrp": 14634,
+  "featured": false,
+  "colors": [],
+  "sold_out": false,
+  "description": "Elevate collection — ActivMatt superior comfort bonnel spring and memory foam mattress.",
+  "image_url": "/images/relaxwell-activmatt-mattress-elevate.jpg",
+  "id": "9ea3e99e-2a61-4498-afaf-966093c2b0e0",
+  "created_at": "2026-08-11T08:22:47.315846+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Maxima Mattress (Elevate)",
+  "category": "Mattresses",
+  "price": 17978,
+  "mrp": 21150,
+  "description": "Elevate collection — Maxima premium pressure relief bonnel spring and memory foam mattress.",
+  "image_url": "/images/relaxwell-maxima-mattress-elevate.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:48.315846+00:00",
+  "id": "c95324c0-d513-42ee-96a9-6f7df777ec52",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Infinia Mattress (Natural Elements)",
+  "category": "Mattresses",
+  "price": 41687,
+  "mrp": 49044,
+  "description": "Natural Elements collection — Infinia anti-microbial copper infused foam mattress. The power of copper combined with the natural comfort of latex.",
+  "image_url": "/images/relaxwell-infinia-mattress-natural-elements.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:49.315846+00:00",
+  "id": "d21eba7d-fa98-469a-9056-74c0952152f6",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Nature Therapy Mattress (Natural Elements)",
+  "category": "Mattresses",
+  "price": 26305,
+  "mrp": 30947,
+  "featured": false,
+  "colors": [],
+  "sold_out": false,
+  "description": "Natural Elements collection — Nature Therapy hypoallergenic rubberized coir and natural latex mattress.",
+  "image_url": "/images/relaxwell-nature-therapy-mattress-natural-elements.jpg",
+  "id": "0202fc75-c6cf-4b41-bc91-68267f8f2642",
+  "created_at": "2026-08-11T08:22:50.315846+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Royale Mattress (Iconic)",
+  "category": "Mattresses",
+  "price": 12825,
+  "mrp": 17750,
+  "featured": false,
+  "colors": [],
+  "sold_out": false,
+  "description": "Iconic collection — Royale orthopedic back support sandwiched coir and memory foam mattress. Euro top finish, 6\" thickness, 7-year warranty.",
+  "image_url": "/images/relaxwell-royale-mattress-iconic.jpg",
+  "id": "367e2160-2049-4e7a-ba51-161918bdeb80",
+  "created_at": "2026-08-11T08:22:51.315846+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Majestic ET Mattress (Iconic)",
+  "category": "Mattresses",
+  "price": 13919,
+  "mrp": 16375,
+  "description": "Iconic collection — Majestic ET superior comfort foam mattress with euro top.",
+  "image_url": "/images/relaxwell-majestic-et-mattress-iconic.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:52.315846+00:00",
+  "id": "446d6680-137d-4194-8fbb-1ef809490343",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Aristo Mattress (Elevate)",
+  "category": "Mattresses",
+  "price": 9708,
+  "mrp": 11421,
+  "description": "Elevate collection — Aristo reversible full body support bonnel spring mattress. Two sides, one incredible mattress.",
+  "image_url": "/images/relaxwell-aristo-mattress-elevate.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:53.315846+00:00",
+  "id": "be386849-eddc-48ad-b4a2-e9e9ef9204d0",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Aristo PT Mattress (Elevate)",
+  "category": "Mattresses",
+  "price": 11970,
+  "mrp": 14082,
+  "description": "Elevate collection — Aristo PT full body support bonnel spring and high density foam mattress with pillow-top quilted finish.",
+  "image_url": "/images/relaxwell-aristo-pt-mattress-elevate.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:54.315846+00:00",
+  "id": "6826ae45-0097-4083-84fe-f5cfc86ef8aa",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell VitaSleep Mattress (Iconic)",
+  "category": "Mattresses",
+  "price": 32134,
+  "mrp": 37805,
+  "description": "Iconic collection — VitaSleep cool gel infused memory foam and rubberised coir mattress.",
+  "image_url": "/images/relaxwell-vitasleep-mattress-iconic.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:55.315846+00:00",
+  "id": "8adeef17-4dda-48e1-8bb2-3ca2bbd5a434",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Cosmos Mattress (Natural Elements)",
+  "category": "Mattresses",
+  "price": 44047,
+  "mrp": 51820,
+  "description": "Natural Elements collection — Cosmos anti-microbial copper infused pocketed spring mattress.",
+  "image_url": "/images/relaxwell-cosmos-mattress-natural-elements.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:56.315846+00:00",
+  "id": "f0ab0e3a-e057-42f8-a114-d93b450d4b1f",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Exotica Dlx ET Mattress (Iconic)",
+  "category": "Mattresses",
+  "price": 23621,
+  "mrp": 27789,
+  "description": "Iconic collection — Exotica Dlx ET premium comfort memory foam mattress with euro top. Dare to dream.",
+  "image_url": "/images/relaxwell-exotica-dlx-et-mattress-iconic.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:57.315846+00:00",
+  "id": "9e599442-d4e5-468a-83f7-7a9a71b302b0",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Luxurio Mattress (Elevate)",
+  "category": "Mattresses",
+  "price": 12188,
+  "mrp": 14339,
+  "description": "Elevate collection — Luxurio premium comfort pocketed spring mattress. A perfect blend of pocket spring support and quilted luxury.",
+  "image_url": "/images/relaxwell-luxurio-mattress-elevate.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:58.315846+00:00",
+  "id": "1bfbb3f6-9c40-41b1-a3ac-c0ba3235823d",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Luxurio ET Mattress (Elevate)",
+  "category": "Mattresses",
+  "price": 11878,
+  "mrp": 15405,
+  "description": "Elevate collection — Luxurio ET premium comfort pocketed spring mattress with euro top. Crafted from a dream.",
+  "image_url": "/images/relaxwell-luxurio-et-mattress-elevate.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:22:59.315846+00:00",
+  "id": "a75d2dd9-29dc-4e62-9c6a-9e65d0cbdc56",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell OrthoFit Mattress (Iconic)",
+  "category": "Mattresses",
+  "price": 13589,
+  "mrp": 15987,
+  "featured": true,
+  "colors": [],
+  "sold_out": false,
+  "description": "Iconic collection — OrthoFit orthopedic full body support coir and visco memory foam mattress. No more back pain.",
+  "image_url": "/images/relaxwell-orthofit-mattress-iconic.jpg",
+  "id": "213f5756-18d3-4f10-abef-4be0770c49c5",
+  "created_at": "2026-08-11T08:23:00.315846+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Regal Mattress (Dynamic)",
+  "category": "Mattresses",
+  "price": 9826,
+  "mrp": 10918,
+  "description": "Dynamic collection — Regal reversible high density foam and super soft foam mattress. Firm stability or plush softness.",
+  "image_url": "/images/relaxwell-regal-mattress-dynamic.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:23:01.315846+00:00",
+  "id": "26cbe086-5da1-4486-a18c-0ffbce9647fa",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell TechnoSoft Mattress (Dynamic)",
+  "category": "Mattresses",
+  "price": 10508,
+  "mrp": 11676,
+  "description": "Dynamic collection — TechnoSoft superior comfort super soft foam mattress. Long-lasting comfort with durability and exceptional value.",
+  "image_url": "/images/relaxwell-technosoft-mattress-dynamic.jpg",
+  "colors": [],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T08:23:02.315846+00:00",
+  "id": "caed790b-bc7d-46a9-9538-adc13fb3b5b9",
+  "color_images": {}
+ },
+ {
+  "name": "Relaxwell Prism Mattress (Dynamic)",
+  "category": "Mattresses",
+  "price": 10422,
+  "mrp": 11580,
+  "featured": false,
+  "colors": [],
+  "sold_out": false,
+  "description": "Dynamic collection — Prism super durable sandwiched coir and foam mattress. Ample firmness, enhanced back support, natural cooling.",
+  "image_url": "/images/relaxwell-prism-mattress-dynamic.jpg",
+  "id": "28b07f2d-42da-4ce4-9e87-32cef768d3be",
+  "created_at": "2026-08-11T08:23:03.315846+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Ortho Comfort Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1720,
+  "mrp": 2300,
+  "description": "Ergonomic ortho-support back with sturdy arms. New launch, 3-year warranty.",
+  "image_url": "/images/nilkamal-ortho-comfort-plastic-arm-chair.jpg",
+  "colors": [
+   "Black",
+   "Brown",
+   "Cream"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:01.018673+00:00",
+  "id": "cd2312b4-a0f2-4d6a-9963-81a31c8b49ea",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Novella 10 Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 2270,
+  "mrp": 2700,
+  "description": "Sleek moulded arm chair on chrome legs. Modern comfort for dining and cafes. 3-year warranty.",
+  "image_url": "/images/nilkamal-novella-10-plastic-arm-chair.jpg",
+  "colors": [
+   "Blue"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:02.018673+00:00",
+  "id": "98f7768b-dc9e-4e02-bba1-16960e4d9dea",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Novella 09 Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 2190,
+  "mrp": 2550,
+  "description": "Curved-back arm chair on chrome legs. A bright pop of colour for any room. 3-year warranty.",
+  "image_url": "/images/nilkamal-novella-09-plastic-arm-chair.jpg",
+  "colors": [
+   "Orange",
+   "Biscuit",
+   "Red",
+   "Light Green"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:03.018673+00:00",
+  "id": "7c8d2ab9-3b1c-4099-a82c-8abad29ea6c7",
+  "color_images": {
+   "Biscuit": "/images/nilkamal-novella-09-plastic-arm-chair--biscuit.jpg",
+   "Red": "/images/nilkamal-novella-09-plastic-arm-chair--red.jpg"
+  }
+ },
+ {
+  "name": "Nilkamal Club Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 2990,
+  "mrp": 3450,
+  "description": "Rattan-look club chair, weatherproof for balcony and garden. 3-year warranty.",
+  "image_url": "/images/nilkamal-club-plastic-arm-chair.jpg",
+  "colors": [
+   "Charcoal Grey"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:04.018673+00:00",
+  "id": "80616899-2222-4edc-8834-2188d0a6563c",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Luxe Full-Back Cushioned Plastic Chair",
+  "category": "Plastic Chairs",
+  "price": 4500,
+  "mrp": 5200,
+  "description": "Full-back cushioned comfort with an elegant frame. New launch, 3-year warranty.",
+  "image_url": "/images/nilkamal-luxe-full-back-cushioned-plastic-chair.jpg",
+  "colors": [
+   "Teal",
+   "Black",
+   "Bright Red & Black"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:05.018673+00:00",
+  "id": "8a6bdb71-ab8e-4dc4-990f-02a75d1f4f81",
+  "color_images": {
+   "Bright Red & Black": "/images/nilkamal-luxe-full-back-cushioned-plastic-chair--bright-red-black.jpg"
+  }
+ },
+ {
+  "name": "Nilkamal Arena Woven Style Plastic Chair (Without Cushion)",
+  "category": "Plastic Chairs",
+  "price": 4990,
+  "mrp": 6200,
+  "description": "Airy woven-style shell, perfect for balconies. New launch, 3-year warranty.",
+  "image_url": "/images/nilkamal-arena-woven-style-plastic-chair-without-cushion.jpg",
+  "colors": [
+   "Ivory",
+   "Grey",
+   "Brown"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:06.018673+00:00",
+  "id": "16372ae9-39a2-4b33-bb67-e63734dd7477",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Arena Cushioned Plastic Chair",
+  "category": "Plastic Chairs",
+  "price": 6550,
+  "mrp": 8200,
+  "description": "Arena lounge chair with plush cushioning. New launch, 3-year warranty.",
+  "image_url": "/images/nilkamal-arena-cushioned-plastic-chair.jpg",
+  "colors": [
+   "White",
+   "Brown"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:07.018673+00:00",
+  "id": "3c3fea83-e1bd-4bff-b714-57d4f18ed97c",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Ace Plastic Chair",
+  "category": "Plastic Chairs",
+  "price": 1860,
+  "mrp": 2100,
+  "description": "Armless stackable chair with a clean modern profile. 3-year warranty.",
+  "image_url": "/images/nilkamal-ace-plastic-chair.jpg",
+  "colors": [
+   "Green",
+   "Red",
+   "Yellow"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:08.018673+00:00",
+  "id": "39ef087b-2c34-4775-a66c-486224eeb015",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Bliss Plastic Chair",
+  "category": "Plastic Chairs",
+  "price": 1690,
+  "mrp": 1900,
+  "description": "Chiavari-style event chair in plastic — wedding elegance, everyday strength. 3-year warranty.",
+  "image_url": "/images/nilkamal-bliss-plastic-chair.jpg",
+  "colors": [
+   "Gold",
+   "Cream"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:09.018673+00:00",
+  "id": "5cf3c2c3-a813-4a44-9e32-b367f472b994",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Glam Plastic Chair",
+  "category": "Plastic Chairs",
+  "price": 1690,
+  "mrp": 1900,
+  "description": "Decorative high-back chair for functions and dining. 3-year warranty.",
+  "image_url": "/images/nilkamal-glam-plastic-chair.jpg",
+  "colors": [
+   "Cream",
+   "Gold"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:10.018673+00:00",
+  "id": "cd05c59b-131f-4474-b0fd-3ac154555c24",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Elevate Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1410,
+  "mrp": 1600,
+  "description": "Ventilated-back arm chair, light yet strong. 3-year warranty.",
+  "image_url": "/images/nilkamal-elevate-plastic-arm-chair.jpg",
+  "colors": [
+   "Green",
+   "Charcoal",
+   "Cream",
+   "Brown",
+   "Dark Grey"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:11.018673+00:00",
+  "id": "fd93e44a-48a6-44e8-9189-231e5d95700b",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Aura Plastic Chair",
+  "category": "Plastic Chairs",
+  "price": 2140,
+  "mrp": 2300,
+  "description": "Sunburst cutout back with a royal round silhouette. 3-year warranty.",
+  "image_url": "/images/nilkamal-aura-plastic-chair.jpg",
+  "colors": [
+   "Gold",
+   "Pearl White"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:12.018673+00:00",
+  "id": "12fa9666-ecf7-472c-9826-7418cffeb4c6",
+  "color_images": {
+   "Pearl White": "/images/nilkamal-aura-plastic-chair--pearl-white.jpg"
+  }
+ },
+ {
+  "name": "Nilkamal Grace Plastic Chair",
+  "category": "Plastic Chairs",
+  "price": 2140,
+  "mrp": 2300,
+  "description": "Cane-look oval back with graceful curved legs. 3-year warranty.",
+  "image_url": "/images/nilkamal-grace-plastic-chair.jpg",
+  "colors": [
+   "Pearl White",
+   "Gold"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:13.018673+00:00",
+  "id": "9a645a65-85a5-48f2-821f-666cd65f6dfe",
+  "color_images": {
+   "Gold": "/images/nilkamal-grace-plastic-chair--gold.jpg"
+  }
+ },
+ {
+  "name": "Nilkamal Startrek Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1660,
+  "mrp": 1900,
+  "description": "Geometric lattice back arm chair for indoors and outdoors. 3-year warranty.",
+  "image_url": "/images/nilkamal-startrek-plastic-arm-chair.jpg",
+  "colors": [
+   "Brown",
+   "Dark Brown"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:14.018673+00:00",
+  "id": "f46ca239-0eeb-4cb3-905f-8f68102df28e",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Captain Chair With Leatherette Cushion",
+  "category": "Plastic Chairs",
+  "price": 3190,
+  "mrp": 3400,
+  "description": "Woven-texture captain chair with leatherette cushion. 3-year warranty.",
+  "image_url": "/images/nilkamal-captain-chair-with-leatherette-cushion.jpg",
+  "colors": [
+   "Charcoal",
+   "Olive",
+   "Teal"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:15.018673+00:00",
+  "id": "2dc3cfb6-d041-4ea7-a51b-2ef798c6e0e7",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Paradise Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1490,
+  "mrp": 1750,
+  "description": "Rattan-pattern back arm chair. New launch, 3-year warranty.",
+  "image_url": "/images/nilkamal-paradise-plastic-arm-chair.jpg",
+  "colors": [
+   "Dark Beige",
+   "Rust Brown",
+   "Ivory"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:16.018673+00:00",
+  "id": "e6342a2f-c969-4db7-9542-0e52f688963f",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Octo Junior Plastic Kids Chair With Tray",
+  "category": "Plastic Chairs",
+  "price": 1300,
+  "mrp": 1400,
+  "description": "Kids chair with detachable feeding tray — safe, easy to clean. 3-year warranty.",
+  "image_url": "/images/nilkamal-octo-junior-plastic-kids-chair-with-tray.jpg",
+  "colors": [
+   "Yellow",
+   "Pink",
+   "Navy Blue"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:19:17.018673+00:00",
+  "id": "1d5cd094-6599-40a6-a925-c5cc31b41e22",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal CHR2146 Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1670,
+  "mrp": 1950,
+  "description": "Perforated high-back arm chair, sturdy and airy. 3-year warranty.",
+  "image_url": "/images/nilkamal-chr2146-plastic-arm-chair.jpg",
+  "colors": [
+   "Dark Grey",
+   "Ivory"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:22.553496+00:00",
+  "id": "8eb6ee36-2886-4e13-9383-633d41baf585",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Eeezy Go Plastic Armchair",
+  "category": "Plastic Chairs",
+  "price": 1110,
+  "mrp": 1350,
+  "description": "Best seller — curved tub-style armchair, deep and comfortable. 3-year warranty.",
+  "image_url": "/images/nilkamal-eeezy-go-plastic-armchair.jpg",
+  "colors": [
+   "Rust Brown"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:23.553496+00:00",
+  "id": "c7c11e13-c648-4ff7-852d-619653b42baa",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Lounger Plastic Chair (Without Cushion)",
+  "category": "Plastic Chairs",
+  "price": 1670,
+  "mrp": 1950,
+  "description": "Fun scoop lounger for kids' corners and casual seating. 3-year warranty.",
+  "image_url": "/images/nilkamal-lounger-plastic-chair-without-cushion.jpg",
+  "colors": [
+   "Light Green",
+   "Orange",
+   "Beige",
+   "Yellow",
+   "Red"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:24.553496+00:00",
+  "id": "76733847-4c56-44bc-9d67-6f66e0b7378c",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Exotica Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1400,
+  "mrp": 1600,
+  "description": "Best seller — rattan-texture back arm chair. 3-year warranty.",
+  "image_url": "/images/nilkamal-exotica-plastic-arm-chair.jpg",
+  "colors": [
+   "Brown",
+   "White",
+   "Olive",
+   "Charcoal"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:25.553496+00:00",
+  "id": "c404abb1-ee8f-4e47-8bbe-67e2911ea453",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal CHR4025 Plastic Armless Chair",
+  "category": "Plastic Chairs",
+  "price": 1080,
+  "mrp": 1300,
+  "description": "Slat-back armless chair in six colours. 3-year warranty.",
+  "image_url": "/images/nilkamal-chr4025-plastic-armless-chair.jpg",
+  "colors": [
+   "Beige",
+   "Light Green",
+   "Yellow",
+   "Grey",
+   "Aqua",
+   "Pink"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:26.553496+00:00",
+  "id": "f003edcf-e3b4-4b43-9b2f-5b91207c717b",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal CHR2061 Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1000,
+  "mrp": 1100,
+  "description": "Classic textured-back arm chair, everyday favourite. 3-year warranty.",
+  "image_url": "/images/nilkamal-chr2061-plastic-arm-chair.jpg",
+  "colors": [
+   "Pear Wood",
+   "Blue",
+   "Mauve",
+   "Cream"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:27.553496+00:00",
+  "id": "61d4f5d1-3b11-4ab6-9378-f218fc47f65e",
+  "color_images": {
+   "Pear Wood": "/images/nilkamal-chr2061-plastic-arm-chair--pear-wood.jpg"
+  }
+ },
+ {
+  "name": "Nilkamal CHR4002 Plastic Armless Chair",
+  "category": "Plastic Chairs",
+  "price": 940,
+  "mrp": 1100,
+  "description": "Netted-back armless chair, strong and stackable. 3-year warranty.",
+  "image_url": "/images/nilkamal-chr4002-plastic-armless-chair.jpg",
+  "colors": [
+   "Weather Brown"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:28.553496+00:00",
+  "id": "3412defd-63d1-40b6-a87a-6bb222699d07",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal CHR2005 Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1160,
+  "mrp": 1400,
+  "description": "Fan-back arm chair with wide comfortable seat. 3-year warranty.",
+  "image_url": "/images/nilkamal-chr2005-plastic-arm-chair.jpg",
+  "colors": [
+   "Marble Beige"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:29.553496+00:00",
+  "id": "b0e67c3f-1793-4fa3-a638-f14c8ebf407c",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal CHR2231 Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1470,
+  "mrp": 1650,
+  "description": "Contour high-back arm chair with striped shell. 3-year warranty.",
+  "image_url": "/images/nilkamal-chr2231-plastic-arm-chair.jpg",
+  "colors": [
+   "Brown",
+   "Black",
+   "Beige"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:30.553496+00:00",
+  "id": "8efc280f-975a-4a82-ac40-fde98818da1f",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal CHR2101 Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 1080,
+  "mrp": 1200,
+  "description": "Curved open-back arm chair, light and elegant. 3-year warranty.",
+  "image_url": "/images/nilkamal-chr2101-plastic-arm-chair.jpg",
+  "colors": [
+   "Milky White"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:31.553496+00:00",
+  "id": "2a01da52-ce41-4536-bf51-fe7e49f21145",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Enamora Plastic Armless Chair",
+  "category": "Plastic Chairs",
+  "price": 1890,
+  "mrp": 2200,
+  "description": "Rattan-weave armless chair with premium finish. 3-year warranty.",
+  "image_url": "/images/nilkamal-enamora-plastic-armless-chair.jpg",
+  "colors": [
+   "Iron Black"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:32.553496+00:00",
+  "id": "7a31ffca-add0-4e4a-9aec-4368d0b690cd",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Novella 08 Plastic Armless Chair",
+  "category": "Plastic Chairs",
+  "price": 2230,
+  "mrp": 2650,
+  "description": "Sleek stackable armless chair in five colours. 3-year warranty.",
+  "image_url": "/images/nilkamal-novella-08-plastic-armless-chair.jpg",
+  "colors": [
+   "Biscuit",
+   "Red",
+   "Milky White",
+   "Orange",
+   "Grey"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:33.553496+00:00",
+  "id": "a65c369c-41bf-4826-94fa-1132593403f4",
+  "color_images": {
+   "Red": "/images/nilkamal-novella-08-plastic-armless-chair--red.jpg",
+   "Milky White": "/images/nilkamal-novella-08-plastic-armless-chair--milky-white.jpg",
+   "Orange": "/images/nilkamal-novella-08-plastic-armless-chair--orange.jpg"
+  }
+ },
+ {
+  "name": "Nilkamal Captain Plastic Arm Chair",
+  "category": "Plastic Chairs",
+  "price": 3250,
+  "mrp": 4500,
+  "description": "Woven-texture captain arm chair for indoors and outdoors. 3-year warranty.",
+  "image_url": "/images/nilkamal-captain-plastic-arm-chair.jpg",
+  "colors": [
+   "Silver Grey",
+   "Olive Grey"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:34.553496+00:00",
+  "id": "4ed67d9a-15aa-40b6-b6bf-d2d2e90e901f",
+  "color_images": {}
+ },
+ {
+  "name": "Nilkamal Captain Plastic Arm Chair With Leatherette Cushion (Metallic Dark)",
+  "category": "Plastic Chairs",
+  "price": 3880,
+  "mrp": 4500,
+  "description": "Captain arm chair with plush leatherette cushion in metallic dark. 3-year warranty.",
+  "image_url": "/images/nilkamal-captain-plastic-arm-chair-with-leatherette-cushion-.jpg",
+  "colors": [
+   "Metallic Dark"
+  ],
+  "sold_out": false,
+  "featured": false,
+  "created_at": "2026-08-11T11:26:35.553496+00:00",
+  "id": "5cd07d71-a7cd-4757-b1d4-bc39fd3cd24e",
+  "color_images": {}
+ },
+ {
+  "name": "Executive High-Back Office Chair",
+  "price": 8499,
+  "mrp": 11999,
+  "colors": [
+   "Black"
+  ],
+  "description": "Premium leatherette executive chair with cushioned headrest, armrests and smooth-rolling chrome base.",
+  "image_url": "/images/executive-high-back-office-chair.jpg",
+  "category": "Office Chairs",
+  "featured": false,
+  "sold_out": false,
+  "id": "c96e7f26-78d9-404b-9223-086e0f0775a4",
+  "created_at": "2026-08-12T11:06:47.060921+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Ergonomic Mesh Office Chair",
+  "price": 6499,
+  "mrp": 8999,
+  "colors": [
+   "Grey",
+   "Black"
+  ],
+  "description": "Breathable mesh back with lumbar support and adjustable armrests — comfortable for long working hours.",
+  "image_url": "/images/ergonomic-mesh-office-chair.jpg",
+  "category": "Office Chairs",
+  "featured": false,
+  "sold_out": false,
+  "id": "84d181a9-d760-448b-8dd9-f23a2a9f245a",
+  "created_at": "2026-08-12T11:06:48.060921+00:00",
+  "color_images": {}
+ },
+ {
+  "name": "Visitor Office Chair (Cantilever)",
+  "price": 3999,
+  "mrp": 5499,
+  "colors": [
+   "Black"
+  ],
+  "description": "Sturdy chrome cantilever frame with cushioned seat and back — ideal for offices and waiting areas.",
+  "image_url": "/images/visitor-office-chair-cantilever.jpg",
+  "category": "Office Chairs",
+  "featured": false,
+  "sold_out": false,
+  "id": "43800a5e-b32e-4ae7-ac3a-e864da46cfc1",
+  "created_at": "2026-08-12T11:06:49.060921+00:00",
+  "color_images": {}
+ }
+]

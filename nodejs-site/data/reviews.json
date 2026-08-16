@@ -1,0 +1,30 @@
+[
+ {
+  "name": "Ramesh Kumar",
+  "rating": 5,
+  "photo_url": "",
+  "text": "Ordered a teak sofa on WhatsApp and it was delivered in 4 days. Solid wood, exactly like the photos. Very happy with the price too.",
+  "id": "b733fb6c-9524-4ede-9c4b-8fbd65fe1d1d",
+  "approved": true,
+  "created_at": "2026-08-11T05:59:25.207226+00:00",
+  "owner_reply": "Thank you Ramesh garu! It was a pleasure furnishing your living room. Visit us again!"
+ },
+ {
+  "name": "Lakshmi Devi",
+  "rating": 5,
+  "photo_url": "",
+  "text": "Bought the king size bed for my daughter's wedding. Beautiful finishing and the owner was very helpful on WhatsApp. Highly recommend Mahadevi Furnitures.",
+  "id": "1aeb38fa-a980-49a2-af54-c2d3ac1f88e8",
+  "approved": true,
+  "created_at": "2026-08-11T05:59:25.207226+00:00"
+ },
+ {
+  "name": "Suresh Reddy",
+  "rating": 4,
+  "photo_url": "",
+  "text": "Good quality dining set at a fair price. Delivery team assembled everything at home. Will buy again.",
+  "id": "e108860a-55f3-4517-8d34-279fac31e802",
+  "approved": true,
+  "created_at": "2026-08-11T05:59:25.207226+00:00"
+ }
+]

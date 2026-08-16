@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — MAHADEVI FURNITURES</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a class="brand" href="/"><img src="/images/logo.png" alt="logo" /><span><b>MAHADEVI</b><small>Admin</small></span></a>
+      <div class="nav-links"><a href="/">View Website</a></div>
+    </div>
+  </nav>
+
+  <main class="wrap" style="padding:40px 24px">
+    <div id="login-box" style="max-width:360px">
+      <h2 class="display">Admin Login</h2>
+      <label>Password</label><input id="pw" type="password" />
+      <button class="order-btn" style="background:var(--accent)" id="login-btn">Login</button>
+    </div>
+
+    <div id="panel" style="display:none">
+      <h2 class="display">Products &amp; Prices</h2>
+      <div class="search" style="margin-top:16px">
+        <select id="cat-filter" style="width:220px;display:inline-block"></select>
+        <input id="q" placeholder="Search product…" style="width:260px;display:inline-block" />
+      </div>
+      <table class="admin-table" id="tbl">
+        <thead><tr><th></th><th>Product</th><th>Category</th><th>Price ₹</th><th>MRP ₹</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <h2 class="display" style="margin-top:44px">Orders</h2>
+      <table class="admin-table" id="orders-tbl">
+        <thead><tr><th>Date</th><th>Customer</th><th>Phone</th><th>Product</th><th>Qty</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

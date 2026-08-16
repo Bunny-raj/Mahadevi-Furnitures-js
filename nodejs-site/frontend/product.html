@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — MAHADEVI FURNITURES</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/images/logo.png" alt="Mahadevi Furnitures" />
+        <span><b>MAHADEVI</b><small>Furnitures</small></span>
+      </a>
+      <div class="nav-links"><a href="/">Home</a><a href="/#catalogue">Catalogue</a></div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <div class="product-layout" id="layout" style="display:none">
+      <div class="zoombox" id="zoombox">
+        <span class="badge" id="pd-badge" style="display:none"></span>
+        <img id="pd-img" src="" alt="" />
+      </div>
+      <div>
+        <div class="pd-cat" id="pd-cat"></div>
+        <h1 class="display pd-name" id="pd-name"></h1>
+        <div class="pd-price"><span id="pd-price"></span><span class="mrp" id="pd-mrp"></span></div>
+        <p class="pd-desc" id="pd-desc"></p>
+        <div class="warranty" id="pd-warranty" style="display:none">🛡 3-Year Warranty</div>
+        <div id="colors-wrap" style="display:none">
+          <label>Available Colours <span id="sel-color" style="color:var(--accent)"></span></label>
+          <div class="swatches" id="swatches"></div>
+        </div>
+        <div id="mattress-opts"></div>
+        <button class="order-btn" id="order-btn">Order Now on WhatsApp</button>
+      </div>
+    </div>
+  </main>
+
+  <dialog id="order-dialog">
+    <h3 class="display">Order on WhatsApp</h3>
+    <form id="order-form" method="dialog">
+      <label>Your Name</label><input id="of-name" required />
+      <label>Phone Number</label><input id="of-phone" required />
+      <label>Quantity</label><input id="of-qty" type="number" min="1" value="1" />
+      <label>Delivery Address (optional)</label><textarea id="of-address" rows="2"></textarea>
+      <button class="order-btn" type="submit">Send Order on WhatsApp</button>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script src="/js/product.js"></script>
+</body>
+</html>
